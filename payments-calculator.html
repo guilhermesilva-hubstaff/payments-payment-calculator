@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hubstaff Payments Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:       #2AA7FF;
+      --blue-hover: #1A97EF;
+      --blue-light: #EEF7FF;
+      --blue-mid:   #BFDFFF;
+      --text-900:   #111827;
+      --text-600:   #4B5563;
+      --text-400:   #9CA3AF;
+      --border:     #E5E7EB;
+      --border-mid: #D1D5DB;
+      --bg-page:    #F5F7FA;
+      --bg-card:    #FFFFFF;
+      --bg-opt:     #FFFFFF;
+      --bg-opt-hover: #F9FAFB;
+      --radius-card: 10px;
+      --radius-opt:  8px;
+      --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-page);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── Top nav (mirrors Hubstaff app shell) ── */
+    .topnav {
+      width: 100%;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 32px;
+      height: 52px;
+      gap: 8px;
+    }
+
+    .hs-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      margin-right: 20px;
+    }
+
+    /* Hubstaff "H" mark — teal square with grid */
+    .hs-mark {
+      width: 28px;
+      height: 28px;
+      background: #2CCCA4;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .hs-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-900);
+      letter-spacing: -0.2px;
+    }
+
+    .nav-sep {
+      color: var(--border-mid);
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1;
+    }
+
+    .nav-crumb {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-600);
+    }
+
+    .nav-crumb-active {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-900);
+    }
+
+    /* ── Page wrapper ── */
+    .page {
+      width: 100%;
+      max-width: 680px;
+      padding: 40px 20px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Progress bar ── */
+    .progress-track {
+      height: 3px;
+      background: var(--border);
+      width: 100%;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--blue);
+      border-radius: 0 2px 2px 0;
+      transition: width 0.35s ease;
+    }
+
+    /* ── Card body ── */
+    .card-body {
+      padding: 36px 40px 28px;
+    }
+
+    /* ── Screens ── */
+    .screen { display: none; }
+    .screen.active {
+      display: block;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Question header ── */
+    .step-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--blue);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+
+    .step-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--blue);
+      flex-shrink: 0;
+    }
+
+    .q-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-900);
+      line-height: 1.35;
+      margin-bottom: 6px;
+    }
+
+    .q-sub {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-600);
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    /* ── Option cards ── */
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .opt {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 16px;
+      background: var(--bg-opt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-opt);
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.1s, border-color 0.1s;
+    }
+
+    .opt:hover:not(.selected) {
+      background: var(--bg-opt-hover);
+      border-color: var(--border-mid);
+    }
+
+    .opt.selected {
+      background: var(--blue-light);
+      border: 1.5px solid var(--blue);
+    }
+
+    /* Radio */
+    .radio {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border-mid);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.1s;
+      background: #fff;
+    }
+
+    .opt.selected .radio {
+      border-color: var(--blue);
+      border-width: 2px;
+    }
+
+    .radio-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--blue);
+      opacity: 0;
+      transform: scale(0.3);
+      transition: opacity 0.15s, transform 0.15s;
+    }
+
+    .opt.selected .radio-dot {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .opt-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-600);
+      line-height: 1.45;
+    }
+
+    .opt.selected .opt-label {
+      color: var(--text-900);
+    }
+
+    .opt-note {
+      font-weight: 400;
+      color: var(--text-400);
+    }
+
+    /* ── Fee input ── */
+    .fee-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .toggle-row {
+      display: flex;
+      background: var(--bg-page);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 3px;
+    }
+
+    .ttab {
+      flex: 1;
+      padding: 7px 10px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-400);
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s, box-shadow 0.12s;
+    }
+
+    .ttab.active {
+      background: #fff;
+      color: var(--text-900);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .fee-input-field {
+      width: 100%;
+      padding: 12px 14px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: var(--text-900);
+      outline: none;
+      transition: border-color 0.12s, box-shadow 0.12s;
+      -moz-appearance: textfield;
+    }
+    .fee-input-field::-webkit-outer-spin-button,
+    .fee-input-field::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .fee-input-field::placeholder { color: var(--text-400); }
+    .fee-input-field:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(42,167,255,0.12);
+    }
+
+    .fee-hint {
+      font-size: 12px;
+      color: var(--text-400);
+    }
+
+    /* ── Result screen ── */
+
+    /* Colored header band — bleeds to card edges */
+    .result-header {
+      margin: -36px -40px 0;
+      padding: 28px 40px 26px;
+      border-bottom: 1px solid transparent;
+    }
+
+    .result-header-icon {
+      width: 32px;
+      height: 32px;
+      margin-bottom: 14px;
+      opacity: 0.9;
+    }
+
+    .result-header-headline {
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    /* Body copy — two tiers */
+    .result-body-wrap {
+      padding: 20px 0 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Large stat paragraph — the key number/insight */
+    .result-body-highlight {
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--text-900);
+      line-height: 28px;
+    }
+
+    /* Detail paragraph — the Hubstaff solution */
+    .result-body-detail {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-600);
+      line-height: 23px;
+    }
+
+    /* Generic two-item value list */
+    .result-value-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .result-value-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .result-value-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-400);
+    }
+
+    .result-value-text {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-900);
+      line-height: 22px;
+    }
+
+    /* Andrew card */
+    .andrew-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      background: var(--bg-page);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .andrew-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #0E5C83;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.5px;
+    }
+
+    .andrew-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .andrew-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-900);
+    }
+
+    .andrew-title {
+      font-size: 12px;
+      color: var(--text-400);
+      margin-top: 2px;
+    }
+
+    .andrew-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* Start card */
+    .start-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      background: var(--bg-page);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 14px;
+    }
+
+    .start-card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #ECFDF5;
+      border: 1.5px solid #6EE7B7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .start-card-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .start-card-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-900);
+    }
+
+    .start-card-subtitle {
+      font-size: 12px;
+      color: var(--text-400);
+      margin-top: 2px;
+    }
+
+    .res-btn-primary, .res-btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      height: 38px;
+      padding: 0 16px;
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      text-decoration: none;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.12s, border-color 0.12s, color 0.12s;
+    }
+
+    .res-btn-primary  { background: var(--blue); color: #fff; border: 1.5px solid var(--blue); }
+    .res-btn-primary:hover  { background: var(--blue-hover); border-color: var(--blue-hover); }
+    .res-btn-secondary { background: #fff; color: var(--text-900); border: 1.5px solid var(--border-mid); }
+    .res-btn-secondary:hover { border-color: var(--text-900); }
+
+
+    /* ── Card footer / navigation ── */
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 40px 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-back {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: none;
+      border: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-400);
+      cursor: pointer;
+      padding: 6px 0;
+      transition: color 0.12s;
+    }
+
+    .btn-back:hover { color: var(--text-900); }
+    .btn-back.invisible { visibility: hidden; pointer-events: none; }
+
+    .btn-continue {
+      height: 36px;
+      padding: 0 20px;
+      background: var(--blue);
+      border: none;
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      color: #fff;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.12s, opacity 0.12s;
+    }
+
+    .btn-continue:disabled {
+      background: var(--border);
+      color: var(--text-400);
+      cursor: not-allowed;
+    }
+
+    .btn-continue:not(:disabled):hover { background: var(--blue-hover); }
+
+    /* Step counter pills at footer */
+    .step-counter {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-400);
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top nav -->
+<nav class="topnav">
+  <a href="#" class="hs-logo">
+    <div class="hs-mark">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <rect x="2" y="2" width="5" height="5" rx="1" fill="white"/>
+        <rect x="9" y="2" width="5" height="5" rx="1" fill="white"/>
+        <rect x="2" y="9" width="5" height="5" rx="1" fill="white"/>
+        <rect x="9" y="9" width="5" height="5" rx="1" fill="white" opacity="0.45"/>
+      </svg>
+    </div>
+    <span class="hs-name">Hubstaff</span>
+  </a>
+  <span class="nav-sep">/</span>
+  <span class="nav-crumb">Financials</span>
+  <span class="nav-sep">/</span>
+  <span class="nav-crumb-active">Payments Calculator</span>
+</nav>
+
+<!-- Page -->
+<div class="page">
+  <div class="card" id="card">
+
+    <!-- Progress -->
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill" style="width:20%"></div>
+    </div>
+
+    <!-- Body -->
+    <div class="card-body">
+
+      <!-- Q1 -->
+      <div class="screen active" id="scr-q1">
+        <div class="step-label"><span class="step-dot"></span>Step 1 of 5</div>
+        <h2 class="q-title">How many contractors do you pay?</h2>
+        <p class="q-sub">Include anyone you pay regularly, regardless of location.</p>
+        <div class="options">
+          <button class="opt" data-q="q1" data-v="1-10">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">1–10 people</span>
+          </button>
+          <button class="opt" data-q="q1" data-v="11-25">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">11–25 people</span>
+          </button>
+          <button class="opt" data-q="q1" data-v="26-50">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">26–50 people</span>
+          </button>
+          <button class="opt" data-q="q1" data-v="51-100">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">51–100 people</span>
+          </button>
+          <button class="opt" data-q="q1" data-v="100+">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">100+ people</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="screen" id="scr-q2">
+        <div class="step-label"><span class="step-dot"></span>Step 2 of 5</div>
+        <h2 class="q-title">How often do you run payroll?</h2>
+        <p class="q-sub">We'll use this to estimate your total time or fees per year.</p>
+        <div class="options">
+          <button class="opt" data-q="q2" data-v="weekly">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">Weekly</span>
+          </button>
+          <button class="opt" data-q="q2" data-v="biweekly">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">Every two weeks</span>
+          </button>
+          <button class="opt" data-q="q2" data-v="monthly">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">Once a month</span>
+          </button>
+          <button class="opt" data-q="q2" data-v="other">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">Other</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="screen" id="scr-q3">
+        <div class="step-label"><span class="step-dot"></span>Step 3 of 5</div>
+        <h2 class="q-title">How do you currently pay your team?</h2>
+        <p class="q-sub">Pick the option that best describes your setup today.</p>
+        <div class="options">
+          <button class="opt" data-q="q3" data-v="manual">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">Manually — I calculate amounts and send each payment myself</span>
+          </button>
+          <button class="opt" data-q="q3" data-v="platform">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">Through a payroll platform <span class="opt-note">(Deel, Rippling, Remote, ADP)</span></span>
+          </button>
+          <button class="opt" data-q="q3" data-v="accountant">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">Through an accountant or bookkeeper</span>
+          </button>
+          <button class="opt" data-q="q3" data-v="unsure">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">I'm not sure</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Q4A – provider -->
+      <div class="screen" id="scr-q4a">
+        <div class="step-label"><span class="step-dot"></span>Step 4 of 5</div>
+        <h2 class="q-title">Which provider do you use to send payments?</h2>
+        <p class="q-sub">Select the one you use most often.</p>
+        <div class="options">
+          <button class="opt" data-q="q4a" data-v="wise">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">Wise</span>
+          </button>
+          <button class="opt" data-q="q4a" data-v="paypal">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">PayPal</span>
+          </button>
+          <button class="opt" data-q="q4a" data-v="payoneer">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">Payoneer</span>
+          </button>
+          <button class="opt" data-q="q4a" data-v="bank">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">Local bank transfer</span>
+          </button>
+          <button class="opt" data-q="q4a" data-v="mix">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">A mix of providers</span>
+          </button>
+          <button class="opt" data-q="q4a" data-v="other">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">Something else</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Q5A – time per cycle -->
+      <div class="screen" id="scr-q5a">
+        <div class="step-label"><span class="step-dot"></span>Step 4 of 5</div>
+        <h2 class="q-title">How long does one payroll cycle take you?</h2>
+        <p class="q-sub">From calculating amounts to sending the last payment.</p>
+        <div class="options">
+          <button class="opt" data-q="q5a" data-v="lt1">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">Less than 1 hour</span>
+          </button>
+          <button class="opt" data-q="q5a" data-v="1-3">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">1–3 hours</span>
+          </button>
+          <button class="opt" data-q="q5a" data-v="3-5">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">3–5 hours</span>
+          </button>
+          <button class="opt" data-q="q5a" data-v="5-10">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">5–10 hours</span>
+          </button>
+          <button class="opt" data-q="q5a" data-v="10+">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">10+ hours</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Q4B – monthly volume -->
+      <div class="screen" id="scr-q4b">
+        <div class="step-label"><span class="step-dot"></span>Step 4 of 5</div>
+        <h2 class="q-title">What's your monthly payroll volume?</h2>
+        <p class="q-sub">Total amount you send your team per month, roughly.</p>
+        <div class="options">
+          <button class="opt" data-q="q4b" data-v="lt10k">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">Less than $10,000</span>
+          </button>
+          <button class="opt" data-q="q4b" data-v="10-30k">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">$10,000 – $30,000</span>
+          </button>
+          <button class="opt" data-q="q4b" data-v="30-50k">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">$30,000 – $50,000</span>
+          </button>
+          <button class="opt" data-q="q4b" data-v="50-100k">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">$50,000 – $100,000</span>
+          </button>
+          <button class="opt" data-q="q4b" data-v="100k+">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">$100,000+</span>
+          </button>
+          <button class="opt" data-q="q4b" data-v="notsure">
+            <div class="radio"><div class="radio-dot"></div></div>
+            <span class="opt-label">Not sure</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Q5B – fees -->
+      <div class="screen" id="scr-q5b">
+        <div class="step-label"><span class="step-dot"></span>Step 5 of 5</div>
+        <h2 class="q-title">How much do you spend on payment fees per month?</h2>
+        <p class="q-sub">An estimate is fine — we just need a rough number.</p>
+        <div class="fee-wrap">
+          <div class="toggle-row">
+            <button class="ttab active" id="tab-pct"    onclick="setFeeMode('pct')">Percentage (%)</button>
+            <button class="ttab"        id="tab-dollar" onclick="setFeeMode('dollar')">Dollar amount ($)</button>
+          </div>
+          <input
+            class="fee-input-field"
+            id="fee-input"
+            type="number"
+            min="0"
+            step="0.1"
+            placeholder="e.g. 2.5"
+            oninput="onFeeInput()"
+          >
+          <p class="fee-hint" id="fee-hint">Enter the percentage of your total monthly payroll volume</p>
+        </div>
+      </div>
+
+      <!-- Result -->
+      <div class="screen" id="scr-result">
+
+        <!-- Colored header -->
+        <div class="result-header" id="res-header">
+          <div class="result-header-icon" id="res-icon"></div>
+          <h2 class="result-header-headline" id="res-headline">You're spending time on payroll that you don't need to.</h2>
+        </div>
+
+        <!-- Body copy — two tiers -->
+        <div class="result-body-wrap">
+          <div class="result-body-highlight" id="res-body-highlight">You're currently paying around 3.0% in fees.</div>
+          <p   class="result-body-detail"    id="res-body-detail">Hubstaff Payments processes payroll at ~1% via Wise.</p>
+        </div>
+
+        <!-- Andrew card -->
+        <div class="andrew-card">
+          <div class="andrew-avatar" id="andrew-avatar">
+            <img src="https://server-assets.staging.hbstf.co/bd821271db/payroll/welcome_page/andrew_martin-4328b70da1c4186a1777cb28639b35f0e3987777badfc333d11d516b3881e6e9.png" alt="Andrew Martin" onerror="this.parentElement.textContent='AM'">
+          </div>
+          <div class="andrew-info">
+            <div class="andrew-name">Andrew Martin</div>
+            <div class="andrew-title">Payments Specialist · Hubstaff</div>
+          </div>
+          <a href="https://meetings.hubspot.com/andrew-martin" class="res-btn-primary" target="_blank" style="flex-shrink:0">
+            Book a call with Andrew
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 9.5L9.5 2.5M9.5 2.5H5M9.5 2.5V7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+
+        <!-- Start card -->
+        <div class="start-card">
+          <div class="start-card-icon">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11 2C11 2 7 6.5 7 11a4 4 0 0 0 8 0c0-4.5-4-9-4-9Z" stroke="#059669" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M8.5 14.5C7 16 6 18 6 18h10s-1-2-2.5-3.5" stroke="#059669" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M11 8v5" stroke="#059669" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="start-card-info">
+            <div class="start-card-name">Start using Payments</div>
+            <div class="start-card-subtitle">Get set up in minutes — no call needed.</div>
+          </div>
+          <a href="https://app.hubstaff.com/payments/setup" class="res-btn-secondary" target="_blank" style="flex-shrink:0">
+            Start setup now
+          </a>
+        </div>
+
+      </div>
+
+    </div><!-- /card-body -->
+
+    <!-- Footer: question navigation -->
+    <div class="card-footer" id="card-footer">
+      <button class="btn-back invisible" id="btn-back" onclick="goBack()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 11L5 7l4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back
+      </button>
+      <span class="step-counter" id="step-counter">1 / 5</span>
+      <button class="btn-continue" id="btn-continue" onclick="goNext()" disabled>
+        Continue
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M4 2.5l4.5 4-4.5 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
+  </div><!-- /card -->
+</div><!-- /page -->
+
+<script>
+  // ── State ─────────────────────────────────────────────────────
+  const answers = {};
+  let feeMode = 'pct';
+  let path    = null;
+  let history = ['q1'];
+
+  const SCREENS = ['q1','q2','q3','q4a','q5a','q4b','q5b','result'];
+
+  // Path lengths differ — use history length for live step count
+  function totalSteps() {
+    if (path === 'A') return 7; // q1 q2 q3 q4a q5a q4b q5b
+    if (path === 'B') return 5; // q1 q2 q3 q4b q5b
+    if (path === 'C') return 6; // q1 q2 q3 q5a q4a q4b
+    return 5; // before path is known
+  }
+
+  // ── Next screen ───────────────────────────────────────────────
+  // Path A (manual): q1→q2→q3→q4a→q5a→q4b→q5b→result  (can yield: time / money / both)
+  // Path B (platform/accountant): q1→q2→q3→q4b→q5b→result  (can yield: money / generic)
+  // Path C (unsure): q1→q2→q3→q5a→q4a→q4b→result  (can yield: time / generic)
+  function nextOf(cur) {
+    switch (cur) {
+      case 'q1': return 'q2';
+      case 'q2': return 'q3';
+      case 'q3':
+        return path === 'A' ? 'q4a' : path === 'B' ? 'q4b' : 'q5a';
+      case 'q4a':
+        if (path === 'A') return 'q5a';
+        if (path === 'C') return 'q4b';
+        return 'result';
+      case 'q5a':
+        if (path === 'A') return 'q4b'; // Path A continues to fee questions → enables "both"
+        if (path === 'C') return 'q4a';
+        return 'result';
+      case 'q4b':
+        if (path === 'B' || path === 'A') return 'q5b'; // Both A and B ask about fees
+        return 'result'; // Path C ends here (no fee data collected)
+      case 'q5b': return 'result';
+      default:    return 'result';
+    }
+  }
+
+  // ── Show screen ───────────────────────────────────────────────
+  function showScreen(key) {
+    SCREENS.forEach(k => {
+      const el = document.getElementById('scr-' + k);
+      if (el) el.classList.remove('active');
+    });
+    document.getElementById('scr-' + key)?.classList.add('active');
+
+    // Progress — use position in history vs expected path length
+    const step  = key === 'result' ? totalSteps() : history.length;
+    const total = totalSteps();
+    document.getElementById('progress-fill').style.width = Math.min((step / total) * 100, 100) + '%';
+
+    // Step counter
+    document.getElementById('step-counter').textContent = Math.min(step, total) + ' / ' + total;
+
+    // Back
+    const isFirst  = history.length <= 1;
+    const isResult = key === 'result';
+    document.getElementById('btn-back').classList.toggle('invisible', isFirst || isResult);
+
+    // Toggle footer
+    document.getElementById('card-footer').style.display = isResult ? 'none' : '';
+
+    if (!isResult) updateContinue(key);
+  }
+
+  function updateContinue(key) {
+    const btn = document.getElementById('btn-continue');
+    const ok  = isAnswered(key);
+    btn.disabled = !ok;
+  }
+
+  function isAnswered(key) {
+    if (key === 'q5b') {
+      const v = parseFloat(document.getElementById('fee-input').value);
+      return !isNaN(v) && v > 0;
+    }
+    return answers[key] != null;
+  }
+
+  // ── Option clicks ─────────────────────────────────────────────
+  document.querySelectorAll('.opt').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const q = this.dataset.q;
+      const v = this.dataset.v;
+      document.querySelectorAll(`.opt[data-q="${q}"]`).forEach(b => b.classList.remove('selected'));
+      this.classList.add('selected');
+      answers[q] = v;
+
+      if (q === 'q3') {
+        path = v === 'manual' ? 'A'
+             : (v === 'platform' || v === 'accountant') ? 'B'
+             : 'C';
+      }
+
+      updateContinue(history[history.length - 1]);
+    });
+  });
+
+  // ── Fee ───────────────────────────────────────────────────────
+  function setFeeMode(mode) {
+    feeMode = mode;
+    document.getElementById('tab-pct').classList.toggle('active', mode === 'pct');
+    document.getElementById('tab-dollar').classList.toggle('active', mode === 'dollar');
+    document.getElementById('fee-input').placeholder = mode === 'pct' ? 'e.g. 2.5' : 'e.g. 500';
+    document.getElementById('fee-hint').textContent  = mode === 'pct'
+      ? 'Enter the percentage of your total monthly payroll volume'
+      : 'Enter your estimated monthly payment fees in USD';
+    document.getElementById('fee-input').value = '';
+    answers.feeValue = null;
+    updateContinue('q5b');
+  }
+
+  function onFeeInput() {
+    const v = parseFloat(document.getElementById('fee-input').value);
+    answers.feeValue = isNaN(v) ? null : v;
+    answers.feeMode  = feeMode;
+    updateContinue('q5b');
+  }
+
+  // ── Navigate ──────────────────────────────────────────────────
+  function goNext() {
+    const cur = history[history.length - 1];
+    if (!isAnswered(cur)) return;
+    const next = nextOf(cur);
+    if (next === 'result') renderResult();
+    history.push(next);
+    showScreen(next);
+  }
+
+  function goBack() {
+    if (history.length > 1) {
+      history.pop();
+      showScreen(history[history.length - 1]);
+    }
+  }
+
+  // ── Result ─────────────────────────────────────────────────────
+  const PROVIDERS     = ['wise','paypal','payoneer','mix'];
+  const PROVIDER_NAME = { wise:'Wise', paypal:'PayPal', payoneer:'Payoneer', bank:'your bank', mix:'multiple providers', other:'your current provider' };
+  const VOL_MAP       = { lt10k:5000,'10-30k':20000,'30-50k':40000,'50-100k':75000,'100k+':150000,notsure:20000 };
+  const fmt           = n => '$' + Math.round(n).toLocaleString();
+
+  const RESULT_THEMES = {
+    time: {
+      bg: '#FFFBEB', border: '#FDE68A', headlineColor: '#78350F',
+      iconColor: '#D97706',
+      iconSVG: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="12" stroke="#D97706" stroke-width="2"/><path d="M16 10v6l4 2" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+    },
+    money: {
+      bg: '#ECFDF5', border: '#6EE7B7', headlineColor: '#064E3B',
+      iconColor: '#059669',
+      iconSVG: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="12" stroke="#059669" stroke-width="2"/><path d="M16 9v14M12.5 12.5c0-1.933 1.567-2.5 3.5-2.5s3.5.933 3.5 2.5S17.933 15 16 15s-3.5.567-3.5 2.5S14.067 21 16 21s3.5-.567 3.5-2.5" stroke="#059669" stroke-width="1.8" stroke-linecap="round"/></svg>`
+    },
+    both: {
+      bg: '#EEF7FF', border: '#BAE0FF', headlineColor: '#0C4A6E',
+      iconColor: '#2AA7FF',
+      iconSVG: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="12" stroke="#2AA7FF" stroke-width="2"/><path d="M11 16l3.5 3.5L21 12" stroke="#2AA7FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+    },
+    generic: {
+      bg: '#FAF5FF', border: '#DDD6FE', headlineColor: '#4C1D95',
+      iconColor: '#7C3AED',
+      iconSVG: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="12" stroke="#7C3AED" stroke-width="2"/><path d="M16 13c0-1.657 1.343-3 3-3s3 1.343 3 3c0 2-3 2-3 5" stroke="#7C3AED" stroke-width="1.8" stroke-linecap="round"/><circle cx="19" cy="22" r="1" fill="#7C3AED"/></svg>`
+    }
+  };
+
+  function computeType() {
+    const timeSaving  = ['1-3','3-5','5-10','10+'].includes(answers.q5a) && PROVIDERS.includes(answers.q4a);
+    let   moneySaving = false;
+    if (answers.feeValue > 0) {
+      const vol    = VOL_MAP[answers.q4b] || 20000;
+      const feePct = feeMode === 'pct' ? answers.feeValue : (answers.feeValue / vol) * 100;
+      moneySaving  = feePct > 1;
+    }
+    if (timeSaving && moneySaving) return 'both';
+    if (timeSaving)                return 'time';
+    if (moneySaving)               return 'money';
+    return 'generic';
+  }
+
+  function renderResult() {
+    const type     = computeType();
+    const vol      = VOL_MAP[answers.q4b] || 20000;
+    const theme    = RESULT_THEMES[type];
+    const provider = PROVIDER_NAME[answers.q4a] || 'your current provider';
+
+    // Shared fee calculations
+    const feePct    = answers.feeValue > 0
+      ? (feeMode === 'pct' ? answers.feeValue : (answers.feeValue / vol) * 100)
+      : null;
+    const annualNow = feePct ? vol * (feePct / 100) * 12 : null;
+    const at1pct    = vol * 0.01 * 12;
+    const savings   = annualNow ? annualNow - at1pct : null;
+
+    // Time labels
+    const TIME_LABEL = { lt1:'under an hour', '1-3':'1–3 hours', '3-5':'3–5 hours', '5-10':'5–10 hours', '10+':'10+ hours' };
+    const timeStr = TIME_LABEL[answers.q5a] || 'several hours';
+
+    // Frequency multiplier for annual cycle count
+    const FREQ_CYCLES = { weekly:52, biweekly:26, monthly:12, other:20 };
+    const cycles = FREQ_CYCLES[answers.q2] || 26;
+
+    // ── Headlines: problem + quantified outcome ────────────────
+    const headlines = {
+      time:    `You're spending time on payroll you don't need to. Teams your size typically cut that time by more than half.`,
+      money:   savings
+        ? `Your payment fees are higher than they need to be. You could save roughly ${fmt(savings)} a year.`
+        : `Your payment fees are higher than they need to be.`,
+      both:    savings
+        ? `Hubstaff Payments could save you both time and money. That's roughly ${fmt(savings)} in fees alone.`
+        : `Hubstaff Payments could save you both time and money.`,
+      generic: `Hubstaff Payments could simplify your payroll, reduce your fees, or both.`
+    };
+
+    // ── Highlight: key stat (or two-item list for generic) ────
+    const timeHighlight  = `You're running payroll manually through ${provider}, spending ${timeStr} each cycle. With ${cycles} pay runs a year, that's a significant overhead — most of it avoidable.`;
+    const moneyHighlight = annualNow
+      ? `You're currently paying around ${feePct.toFixed(1)}% in fees — that's roughly ${fmt(annualNow)} a year just to move money.`
+      : `You're currently spending a meaningful amount on payment fees every month, on top of the time it takes to run payroll.`;
+    const bothHighlight  = feePct
+      ? `You're spending ${timeStr} per cycle on manual payroll through ${provider}, and paying ${feePct.toFixed(1)}% in fees — roughly ${fmt(annualNow)} a year just to move money.`
+      : `You're spending ${timeStr} per cycle on manual payroll through ${provider}, on top of payment fees every pay run.`;
+
+    // Generic: build a two-item value list
+    const savingsLine = savings
+      ? `Your payment fees are higher than they need to be. You would save roughly ${fmt(savings)} annually.`
+      : `Your payment fees may be higher than they need to be. Hubstaff Payments runs at ~1% via Wise.`;
+    const genericHighlightHTML = `
+      <div class="result-value-list">
+        <div class="result-value-item">
+          <span class="result-value-label">Save money</span>
+          <span class="result-value-text">${savingsLine}</span>
+        </div>
+        <div class="result-value-item">
+          <span class="result-value-label">Save time</span>
+          <span class="result-value-text">You may be spending time on payroll you don't need to. Teams your size typically cut that time by more than half.</span>
+        </div>
+      </div>`;
+
+    const highlights = {
+      time:    timeHighlight,
+      money:   moneyHighlight,
+      both:    bothHighlight,
+      generic: null // handled via innerHTML below
+    };
+
+    // ── Detail paragraph: the Hubstaff solution ───────────────
+    const details = {
+      time:    `Hubstaff Payments connects your tracked time directly to a one-click payroll run. No spreadsheets, no individual transfers — ${provider} is already supported. Andrew can walk you through exactly what it looks like for your team.`,
+      money:   savings
+        ? `Hubstaff Payments processes payroll at ~1% via Wise (about ${fmt(at1pct)}/yr), so you'd keep roughly ${fmt(savings)} that's currently going to fees. Andrew can confirm the exact numbers for your corridors and currencies.`
+        : `Hubstaff Payments processes payroll at ~1% via Wise, which is likely lower than what you're paying today. Andrew can run the exact comparison for your setup.`,
+      both:    savings
+        ? `Hubstaff Payments fixes both: your tracked time flows into a one-click payroll run, and fees drop to ~1% via Wise — saving roughly ${fmt(savings)}/yr. Andrew can show you the full picture in about 20 minutes.`
+        : `Hubstaff Payments fixes both: your tracked time flows into a one-click payroll run, and fees drop to ~1% via Wise. Andrew can show you the full picture in about 20 minutes.`,
+      generic: `Andrew works with teams like yours every week and can tell you in about 20 minutes exactly which of these apply to your setup.`
+    };
+
+    // Apply header theme
+    const header = document.getElementById('res-header');
+    header.style.background  = theme.bg;
+    header.style.borderColor = theme.border;
+    document.getElementById('res-icon').innerHTML       = theme.iconSVG;
+    document.getElementById('res-headline').style.color = theme.headlineColor;
+    document.getElementById('res-headline').textContent = headlines[type];
+
+    // Highlight — generic uses innerHTML for two-item list
+    const highlightEl = document.getElementById('res-body-highlight');
+    if (type === 'generic') {
+      highlightEl.innerHTML = genericHighlightHTML;
+    } else {
+      highlightEl.textContent = highlights[type];
+    }
+
+    document.getElementById('res-body-detail').textContent = details[type];
+  }
+
+  // ── Init ──────────────────────────────────────────────────────
+  showScreen('q1');
+</script>
+</body>
+</html>
