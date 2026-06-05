@@ -3,144 +3,904 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hubstaff Payments Calculator</title>
+  <title>Hubstaff Payments</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --blue:       #2AA7FF;
+      --blue: #2AA7FF;
+      --blue-dark: #0973CB;
       --blue-hover: #1A97EF;
-      --blue-light: #EEF7FF;
-      --blue-mid:   #BFDFFF;
-      --text-900:   #111827;
-      --text-600:   #4B5563;
-      --text-400:   #9CA3AF;
-      --border:     #E5E7EB;
-      --border-mid: #D1D5DB;
-      --bg-page:    #F5F7FA;
-      --bg-card:    #FFFFFF;
-      --bg-opt:     #FFFFFF;
-      --bg-opt-hover: #F9FAFB;
-      --radius-card: 10px;
-      --radius-opt:  8px;
-      --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06);
+      --blue-bg: rgba(9,115,203,0.08);
+      --primary-50: #EAF6FF;
+      --primary-100: #D4EDFF;
+      --primary-700: #0973CB;
+      --primary-800: #0A4B96;
+      --gray-50:  #F9FAFB;
+      --gray-100: #F3F4F6;
+      --gray-200: #E5E7EB;
+      --gray-300: #D1D5DB;
+      --gray-500: #6B7280;
+      --gray-600: #4B5563;
+      --gray-900: #111827;
+      --white: #FFFFFF;
     }
 
     body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg-page);
-      min-height: 100vh;
+      font-family: 'Roboto', sans-serif;
+      background: #F9FAFB;
+    }
+
+
+    /* ── Page wrapper inside shell-content ── */
+    .page {
+      background: #fff;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 48px 40px 40px;
+      text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
+      gap: 0;
     }
 
-    /* ── Top nav (mirrors Hubstaff app shell) ── */
-    .topnav {
-      width: 100%;
-      background: #FFFFFF;
-      border-bottom: 1px solid var(--border);
+    .hero-title {
+      font-size: 36px;
+      font-weight: 500;
+      color: var(--gray-900);
+      line-height: 44px;
+      margin-bottom: 16px;
+    }
+
+    .hero-subtitle-wrap {
+      max-width: 618px;
+      margin-bottom: 20px;
+    }
+
+    .hero-subtitle {
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--gray-600);
+      line-height: 28px;
+    }
+
+    .hero-btns {
       display: flex;
       align-items: center;
-      padding: 0 32px;
-      height: 52px;
-      gap: 8px;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
     }
 
-    .hs-logo {
-      display: flex;
+    .btn-hero-primary {
+      display: inline-flex;
       align-items: center;
       gap: 8px;
-      text-decoration: none;
-      margin-right: 20px;
-    }
-
-    /* Hubstaff "H" mark — teal square with grid */
-    .hs-mark {
-      width: 28px;
-      height: 28px;
-      background: #2CCCA4;
+      height: 48px;
+      padding: 0 24px;
+      background: var(--blue);
+      border: 1px solid var(--blue);
       border-radius: 6px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.12s;
+      white-space: nowrap;
+    }
+    .btn-hero-primary:hover { background: var(--blue-hover); border-color: var(--blue-hover); }
+
+    .btn-hero-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 48px;
+      padding: 0 24px;
+      background: transparent;
+      border: 1px solid var(--blue);
+      border-radius: 6px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--blue);
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.12s;
+      white-space: nowrap;
+    }
+    .btn-hero-outline:hover { background: rgba(42,167,255,0.06); }
+
+    .btn-hero-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 48px;
+      padding: 0 24px;
+      background: transparent;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--gray-600);
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.12s, border-color 0.12s;
+      white-space: nowrap;
+    }
+    .btn-hero-ghost:hover { background: var(--gray-50); border-color: var(--gray-500); }
+
+    .material-symbols-rounded {
+      font-size: 20px;
+      line-height: 1;
+      vertical-align: middle;
+    }
+
+    /* ── Hero illustration (production image) ── */
+    .hero-illustration {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .hero-illustration img {
+      max-width: 680px;
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* ── Calculator card ── */
+    .calc-section {
+      padding: 0 40px 48px;
+    }
+
+    .calc-card {
+      background: #F0F7FF;
+      border: 1px solid #BFDBFE;
+      border-radius: 12px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      overflow: hidden;
+      align-items: stretch;
+    }
+
+    .calc-left {
+      padding: 32px 40px 32px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .calc-title {
+      font-size: 30px;
+      font-weight: 500;
+      color: #1f2937;
+      line-height: 40px;
+    }
+
+    .calc-title-highlight {
+      color: #7f3cf2;
+      font-weight: 700;
+    }
+
+    .calc-desc {
+      font-size: 16px;
+      font-weight: 500;
+      color: #6b7280;
+      line-height: 24px;
+    }
+
+    .calc-btns {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-calc-primary {
+      display: inline-flex;
+      align-items: center;
+      padding: 12px 24px;
+      background: #2ba7ff;
+      border: none;
+      border-radius: 6px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.12s;
+      white-space: nowrap;
+    }
+    .btn-calc-primary:hover { background: #0057C2; }
+
+    .btn-calc-outline {
+      display: inline-flex;
+      align-items: center;
+      padding: 12px 24px;
+      background: transparent;
+      border: 1px solid #2ba7ff;
+      border-radius: 6px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+      color: #2ba7ff;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.12s;
+      white-space: nowrap;
+    }
+    .btn-calc-outline:hover { background: rgba(1,104,221,0.06); }
+
+    .btn-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 400;
+      color: #2ba7ff;
+      cursor: pointer;
+      background: none;
+      border: none;
+      border-radius: 6px;
+      font-family: 'Roboto', sans-serif;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn-link:hover { background: rgba(1,104,221,0.06); }
+
+    /* ── Payroll table preview ── */
+    .calc-right {
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+      overflow: hidden;
+      max-width: 380px;
+    }
+
+    .calc-right img {
+      height: 100%;
+      width: auto;
+      display: block;
+      max-height: 260px;
+    }
+
+    .payroll-preview {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      overflow: hidden;
+      width: 100%;
+      font-size: 11px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .preview-toolbar {
+      background: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      color: #fff;
+      font-size: 11px;
+    }
+
+    .preview-toolbar-left { display: flex; align-items: center; gap: 8px; }
+
+    .preview-selected-badge {
+      background: rgba(255,255,255,0.25);
+      border-radius: 10px;
+      padding: 1px 8px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .preview-toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 10px;
+      opacity: 0.9;
+    }
+
+    .preview-table { width: 100%; border-collapse: collapse; }
+
+    .preview-table th {
+      text-align: left;
+      padding: 6px 10px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--gray-600);
+      border-bottom: 1px solid var(--gray-200);
+      background: var(--gray-50);
+    }
+
+    .preview-table td {
+      padding: 6px 10px;
+      border-bottom: 1px solid var(--gray-100);
+      color: var(--gray-900);
+      vertical-align: middle;
+    }
+
+    .preview-table tr:last-child td { border-bottom: none; }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 7px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .status-ready   { background: #D1FAE5; color: #065F46; }
+    .status-missing { background: #FEF3C7; color: #92400E; }
+
+    .member-name { font-size: 11px; font-weight: 500; color: var(--gray-900); }
+    .pay-info { font-size: 10px; color: var(--gray-600); line-height: 1.3; }
+    .payment-provider { font-size: 10px; font-weight: 600; color: var(--blue); }
+
+    /* ── Partners section ── */
+    .partners-section {
+      padding: 0 40px 40px;
+    }
+
+    .section-label {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--gray-900);
+      margin-bottom: 20px;
+    }
+
+    .partners-strip {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .partner-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .partner-logo {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .partner-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--gray-900);
+      white-space: nowrap;
+    }
+
+    .partner-divider {
+      width: 1px;
+      height: 36px;
+      background: var(--gray-200);
+      flex-shrink: 0;
+    }
+
+    /* ── Features section ── */
+    .features-section {
+      padding: 0 40px 40px;
+    }
+
+    .section-heading {
+      font-size: 24px;
+      font-weight: 300;
+      color: var(--gray-900);
+      line-height: 32px;
+      margin-bottom: 20px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .feature-iconbox {
+      width: 36px;
+      height: 36px;
+      background: var(--primary-100);
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
     }
 
-    .hs-name {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text-900);
-      letter-spacing: -0.2px;
+    .feature-iconbox .material-symbols-rounded {
+      font-size: 24px;
+      color: var(--primary-800);
     }
 
-    .nav-sep {
-      color: var(--border-mid);
+    .feature-title {
       font-size: 18px;
-      font-weight: 300;
-      line-height: 1;
-    }
-
-    .nav-crumb {
-      font-size: 13px;
       font-weight: 500;
-      color: var(--text-600);
+      color: var(--gray-900);
+      line-height: 26px;
     }
 
-    .nav-crumb-active {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-900);
+    .feature-desc {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--gray-600);
+      line-height: 20px;
     }
 
-    /* ── Page wrapper ── */
-    .page {
-      width: 100%;
-      max-width: 680px;
-      padding: 40px 20px 80px;
+    /* ── Testimonials section ── */
+    .testimonials-section {
+      padding: 0 40px 40px;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .testimonial-card {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 20px 24px;
       display: flex;
       flex-direction: column;
-      align-items: stretch;
       gap: 0;
     }
 
-    /* ── Card ── */
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-card);
-      box-shadow: var(--shadow-card);
-      overflow: hidden;
+    .stars {
       display: flex;
-      flex-direction: column;
+      gap: 2px;
+      margin-bottom: 12px;
     }
 
-    /* ── Progress bar ── */
-    .progress-track {
-      height: 3px;
-      background: var(--border);
+    .star { color: #F59E0B; font-size: 16px; line-height: 1; }
+
+    .testimonial-text {
+      font-size: 13px;
+      font-weight: 400;
+      color: #374151;
+      line-height: 1.5;
+      flex: 1;
+      margin-bottom: 16px;
+    }
+
+    .testimonial-author {
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .author-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+
+    .author-company {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--gray-500);
+    }
+
+    /* ── Bottom CTA banner ── */
+    .bottom-cta {
+      margin: 0 40px 48px;
+      background: var(--primary-50);
+      border: 1px solid #BFDBFE;
+      border-radius: 12px;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      position: relative;
+    }
+
+    .bottom-cta-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .bottom-cta-icon {
+      color: #3B82F6;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .bottom-cta-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .bottom-cta-heading {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1D4ED8;
+    }
+
+    .bottom-cta-sub {
+      font-size: 13px;
+      font-weight: 400;
+      color: #2563EB;
+    }
+
+    .btn-cta-demo {
+      display: inline-flex;
+      align-items: center;
+      height: 40px;
+      padding: 0 20px;
+      background: transparent;
+      border: 1px solid #1D4ED8;
+      border-radius: 8px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1D4ED8;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.12s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .btn-cta-demo:hover { background: rgba(29,78,216,0.06); }
+
+    .bottom-cta-close {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #6B7280;
+      font-size: 14px;
+      transition: color 0.12s, background 0.12s;
+    }
+    .bottom-cta-close:hover { color: var(--gray-900); background: rgba(0,0,0,0.06); }
+
+    /* ── View 2 dialog — default landing, View 1 shown after "Get started" ── */
+    @keyframes v2-backdrop-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes v2-dialog-in {
+      from { opacity: 0; transform: translateY(8px) scale(0.98); }
+      to   { opacity: 1; transform: translateY(0)   scale(1);    }
+    }
+
+    #view2-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: v2-backdrop-in 180ms ease forwards;
+    }
+
+    .v2-dialog {
+      animation: v2-dialog-in 200ms ease forwards;
+      background: #fff;
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+      width: 100%;
+      max-width: 640px;
+      max-height: calc(100vh - 100px);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    .v2-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 20px 10px;
+      border-bottom: 1px solid #F3F4F6;
+      flex-shrink: 0;
+    }
+
+    .v2-title {
+      flex: 1;
+      font-size: 18px;
+      font-weight: 600;
+      color: #111928;
+      line-height: 26px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin: 0;
+    }
+
+    .v2-close {
+      width: 24px;
+      height: 24px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: #6B7280;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+      padding: 0;
+    }
+    .v2-close:hover { background: #F3F4F6; }
+
+    .v2-body {
+      padding: 10px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .v2-card {
+      background: #F9FAFB;
+      border: 1px solid #D1D5DB;
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .v2-card-text { display: flex; flex-direction: column; gap: 4px; color: #2D3137; }
+    .v2-card-title { font-size: 16px; font-weight: 600; line-height: 24px; margin: 0; }
+    .v2-card-sub { font-size: 14px; line-height: 1.4; margin: 0; }
+    .v2-link { color: #2D3137; text-decoration: underline; }
+
+    .v2-features { display: flex; flex-direction: column; gap: 12px; }
+    .v2-feature-row { display: flex; align-items: center; gap: 8px; }
+    .v2-icon-box {
+      width: 24px; height: 24px;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .v2-feature-text { font-size: 16px; color: #374151; line-height: 24px; }
+
+    .v2-btn-primary {
+      display: inline-flex; align-items: center;
+      padding: 10px 20px;
+      background: #2AA7FF; border: none; border-radius: 6px;
+      font-size: 14px; color: #fff; cursor: pointer;
+      font-family: 'Roboto', sans-serif; align-self: flex-start;
+    }
+    .v2-btn-primary:hover { background: #1A97EF; }
+
+    .v2-banner {
+      background: #EAF6FF;
+      border-radius: 8px;
+      padding: 0 0 0 20px;
+      display: flex;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    .v2-banner-left {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      flex: 1;
+      min-width: 0;
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+
+    .v2-banner-text { display: flex; flex-direction: column; gap: 8px; }
+    .v2-banner-title { font-size: 18px; font-weight: 600; line-height: 26px; color: #2D3137; margin: 0; }
+    .v2-banner-sub { font-size: 14px; color: #2D3137; line-height: 1.4; margin: 0; }
+
+    .v2-btn-outline {
+      display: inline-flex; align-items: center;
+      padding: 10px 20px;
+      background: transparent; border: 1px solid #2ba7ff; border-radius: 6px;
+      font-size: 14px; color: #2ba7ff; cursor: pointer;
+      font-family: 'Roboto', sans-serif; align-self: flex-start;
+    }
+    .v2-btn-outline:hover { background: rgba(1,104,221,0.06); }
+
+    .v2-banner-right {
+      display: flex;
+      align-items: flex-end;
+      flex-shrink: 0;
+    }
+
+    .v2-banner-img {
+      height: 155px;
+      width: auto;
+      display: block;
+    }
+
+    .v2-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px;
+      border-top: 1px solid #F3F4F6;
+      flex-shrink: 0;
+    }
+
+    .v2-footer-right { display: flex; align-items: center; gap: 20px; }
+
+    .v2-btn-ghost {
+      background: none; border: none;
+      font-size: 14px; color: #6B7280;
+      cursor: pointer; font-family: 'Roboto', sans-serif;
+      padding: 10px 20px; border-radius: 6px;
+    }
+    .v2-btn-ghost:hover { background: #F9FAFB; }
+
+    .v2-btn-secondary {
+      display: inline-flex; align-items: center;
+      padding: 10px 20px;
+      background: #fff; border: 1px solid #D1D5DB; border-radius: 6px;
+      font-size: 14px; color: #4B5563; cursor: pointer;
+      font-family: 'Roboto', sans-serif;
+    }
+    .v2-btn-secondary:hover { background: #F9FAFB; }
+
+    .v2-btn-blue-outline {
+      display: inline-flex; align-items: center;
+      padding: 10px 20px;
+      background: transparent; border: 1px solid #2AA7FF; border-radius: 6px;
+      font-size: 14px; color: #2AA7FF; cursor: pointer;
+      font-family: 'Roboto', sans-serif; text-decoration: none;
+    }
+    .v2-btn-blue-outline:hover { background: rgba(42,167,255,0.06); }
+
+    /* ── Modal overlay ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal-inner {
+      position: relative;
+      width: 100%;
+      max-width: 620px;
+    }
+
+    /* ── Dialog card (kept identical) ── */
+    .card {
+      background: var(--white);
+      border-radius: 8px;
+      box-shadow: 0px 4px 12px 0px rgba(0,0,0,0.3);
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      overflow: hidden;
+      height: 626px;
+      overflow-y: auto;
+    }
+
+    .card-header {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    .card-header-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      height: 20px;
+      padding: 0 6px;
+      background: var(--blue-bg);
+      border: 1px solid var(--blue);
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--blue-dark);
+      white-space: nowrap;
+    }
+
+    .modal-close-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #9CA3AF;
+      font-size: 18px;
+      line-height: 1;
+      transition: color 0.12s, background 0.12s;
+    }
+    .modal-close-btn:hover { color: var(--gray-900); background: var(--gray-100); }
+
+    .progress-bar {
+      height: 6px;
+      border-radius: 60px;
+      background: var(--gray-200);
+      overflow: hidden;
       width: 100%;
     }
 
     .progress-fill {
       height: 100%;
       background: var(--blue);
-      border-radius: 0 2px 2px 0;
+      border-radius: 60px;
       transition: width 0.35s ease;
     }
 
-    /* ── Card body ── */
     .card-body {
-      padding: 36px 40px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      flex: 1;
     }
 
-    /* ── Screens ── */
     .screen { display: none; }
     .screen.active {
-      display: block;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
       animation: fadeIn 0.2s ease;
     }
 
@@ -149,1018 +909,2019 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ── Question header ── */
-    .step-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--blue);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 10px;
-    }
+    #scr-result.active { gap: 0; }
 
-    .step-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--blue);
-      flex-shrink: 0;
-    }
+    .q-head { display: flex; flex-direction: column; gap: 4px; }
 
     .q-title {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--text-900);
-      line-height: 1.35;
-      margin-bottom: 6px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #111928;
+      line-height: 26px;
     }
 
     .q-sub {
-      font-size: 13px;
+      font-size: 16px;
       font-weight: 400;
-      color: var(--text-600);
-      line-height: 1.5;
-      margin-bottom: 24px;
+      color: #374151;
+      line-height: 24px;
     }
 
-    /* ── Option cards ── */
-    .options {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+    .options { display: flex; flex-direction: column; gap: 12px; }
 
     .opt {
       width: 100%;
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 13px 16px;
-      background: var(--bg-opt);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-opt);
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
       cursor: pointer;
       text-align: left;
-      transition: background 0.1s, border-color 0.1s;
+      transition: border-color 0.1s, background 0.1s;
+      min-height: 36px;
     }
 
-    .opt:hover:not(.selected) {
-      background: var(--bg-opt-hover);
-      border-color: var(--border-mid);
-    }
+    .opt:hover:not(.selected) { border-color: var(--gray-300); background: #F3F4F6; }
 
-    .opt.selected {
-      background: var(--blue-light);
-      border: 1.5px solid var(--blue);
-    }
-
-    /* Radio */
     .radio {
-      width: 18px;
-      height: 18px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
-      border: 1.5px solid var(--border-mid);
+      border: 1px solid var(--gray-200);
       flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: border-color 0.1s;
-      background: #fff;
+      background: var(--white);
+      transition: border 0.12s;
     }
 
-    .opt.selected .radio {
-      border-color: var(--blue);
-      border-width: 2px;
-    }
+    .opt.selected .radio { border: 4px solid var(--blue); }
 
-    .radio-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--blue);
-      opacity: 0;
-      transform: scale(0.3);
-      transition: opacity 0.15s, transform 0.15s;
-    }
+    .opt-label { font-size: 14px; font-weight: 400; color: var(--gray-900); line-height: 20px; }
+    .opt-note  { color: #9CA3AF; }
 
-    .opt.selected .radio-dot {
-      opacity: 1;
-      transform: scale(1);
-    }
+    /* Fee step */
+    .fee-options { display: flex; flex-direction: column; gap: 12px; }
 
-    .opt-label {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-600);
-      line-height: 1.45;
-    }
-
-    .opt.selected .opt-label {
-      color: var(--text-900);
-    }
-
-    .opt-note {
-      font-weight: 400;
-      color: var(--text-400);
-    }
-
-    /* ── Fee input ── */
-    .fee-wrap {
+    .fee-option {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-    }
-
-    .toggle-row {
-      display: flex;
-      background: var(--bg-page);
-      border: 1px solid var(--border);
+      gap: 12px;
+      padding: 8px 12px;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
       border-radius: 8px;
-      padding: 3px;
-    }
-
-    .ttab {
-      flex: 1;
-      padding: 7px 10px;
-      border-radius: 6px;
-      border: none;
-      background: transparent;
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-400);
       cursor: pointer;
-      transition: background 0.12s, color 0.12s, box-shadow 0.12s;
+      text-align: left;
+      transition: border-color 0.1s, background 0.1s;
     }
 
-    .ttab.active {
-      background: #fff;
-      color: var(--text-900);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    .fee-option:hover:not(.selected) { border-color: var(--gray-300); background: #F3F4F6; }
+
+    .fee-opt-row { display: flex; align-items: center; gap: 8px; padding: 2px 0; }
+
+    .fee-radio {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid var(--gray-200);
+      flex-shrink: 0;
+      background: var(--white);
+      transition: border 0.12s;
     }
+
+    .fee-option.selected .fee-radio { border: 4px solid var(--blue); }
+
+    .fee-input-wrap { display: none; flex-direction: column; gap: 7px; }
+    .fee-option.selected .fee-input-wrap { display: flex; }
 
     .fee-input-field {
       width: 100%;
-      padding: 12px 14px;
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-family: 'Inter', sans-serif;
+      padding: 0 15px;
+      height: 40px;
+      background: var(--white);
+      border: 1px solid #D6DBE6;
+      border-radius: 6px;
+      font-family: 'Roboto', sans-serif;
       font-size: 14px;
-      color: var(--text-900);
+      color: var(--gray-900);
       outline: none;
       transition: border-color 0.12s, box-shadow 0.12s;
       -moz-appearance: textfield;
     }
     .fee-input-field::-webkit-outer-spin-button,
     .fee-input-field::-webkit-inner-spin-button { -webkit-appearance: none; }
-    .fee-input-field::placeholder { color: var(--text-400); }
+    .fee-input-field::placeholder { color: #9CA3AF; }
     .fee-input-field:focus {
       border-color: var(--blue);
       box-shadow: 0 0 0 3px rgba(42,167,255,0.12);
     }
 
-    .fee-hint {
-      font-size: 12px;
-      color: var(--text-400);
-    }
+    .fee-hint { font-size: 14px; color: #7A8798; line-height: 1.4; }
 
-    /* ── Result screen ── */
-
-    /* Colored header band — bleeds to card edges */
-    .result-header {
-      margin: -36px -40px 0;
-      padding: 28px 40px 26px;
-      border-bottom: 1px solid transparent;
-    }
-
-    .result-header-icon {
-      width: 32px;
-      height: 32px;
-      margin-bottom: 14px;
-      opacity: 0.9;
-    }
-
-    .result-header-headline {
-      font-size: 21px;
-      font-weight: 700;
-      line-height: 1.35;
-    }
-
-    /* Body copy — two tiers */
-    .result-body-wrap {
-      padding: 20px 0 20px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 20px;
+    /* Result */
+    .res-header {
+      margin: -30px -30px 0;
+      padding: 30px;
+      background: #D4EDFF;
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
 
-    /* Large stat paragraph — the key number/insight */
-    .result-body-highlight {
-      font-size: 17px;
-      font-weight: 500;
-      color: var(--text-900);
-      line-height: 28px;
-    }
+    .res-icon { width: 32px; height: 32px; flex-shrink: 0; }
 
-    /* Detail paragraph — the Hubstaff solution */
-    .result-body-detail {
-      font-size: 14px;
-      font-weight: 400;
-      color: var(--text-600);
-      line-height: 23px;
-    }
+    .res-headline { font-size: 24px; font-weight: 600; color: #0A4B96; line-height: 32px; }
 
-    /* Generic two-item value list */
-    .result-value-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+    .res-body { padding-top: 30px; display: flex; flex-direction: column; gap: 30px; }
 
-    .result-value-item {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
+    .res-text-block { display: flex; flex-direction: column; gap: 16px; }
 
-    .result-value-label {
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-400);
-    }
+    .res-highlight { font-size: 18px; font-weight: 600; color: #111928; line-height: 26px; }
+    .res-highlight p + p { margin-top: 16px; }
 
-    .result-value-text {
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--text-900);
-      line-height: 22px;
-    }
+    .res-detail { font-size: 16px; font-weight: 400; color: #374151; line-height: 24px; }
 
-    /* Andrew card */
-    .andrew-card {
+    .res-cards { display: flex; flex-direction: column; gap: 16px; }
+
+    .res-andrew-card {
       display: flex;
       align-items: center;
-      gap: 14px;
-      padding: 14px 16px;
-      background: var(--bg-page);
-      border: 1px solid var(--border);
+      gap: 16px;
+      padding: 16px;
+      background: #F9FAFB;
+      border: 1px solid #E5E7EB;
       border-radius: 8px;
-      margin-bottom: 10px;
     }
 
-    .andrew-avatar {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
+    .res-avatar-wrap { position: relative; width: 48px; height: 48px; flex-shrink: 0; }
+
+    .res-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 24px;
       overflow: hidden;
-      flex-shrink: 0;
+      box-shadow: 0px 20px 25px -5px rgba(0,0,0,0.1), 0px 10px 10px 0px rgba(0,0,0,0.04);
       background: #0E5C83;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 700;
       color: #fff;
-      letter-spacing: 0.5px;
     }
 
-    .andrew-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
+    .res-avatar img { width: 115%; height: 115%; object-fit: cover; object-position: center top; }
 
-    .andrew-name {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-900);
-    }
-
-    .andrew-title {
-      font-size: 12px;
-      color: var(--text-400);
-      margin-top: 2px;
-    }
-
-    .andrew-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    /* Start card */
-    .start-card {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 14px 16px;
-      background: var(--bg-page);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      margin-bottom: 14px;
-    }
-
-    .start-card-icon {
-      width: 44px;
-      height: 44px;
+    .res-avatar-badge {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      bottom: -3px;
+      right: -6px;
+      background: #fff;
       border-radius: 50%;
-      overflow: hidden;
-      flex-shrink: 0;
-      background: #ECFDF5;
-      border: 1.5px solid #6EE7B7;
+      border: 2px solid #fff;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
     }
 
-    .start-card-info {
-      flex: 1;
-      min-width: 0;
+    .res-card-info { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .res-card-name { font-size: 16px; font-weight: 600; color: #111928; line-height: 24px; }
+    .res-card-title { font-size: 16px; font-weight: 400; color: #374151; line-height: 24px; }
+
+    .res-start-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
     }
 
-    .start-card-name {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-900);
+    .res-start-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 24px;
+      background: #EAF6FF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
 
-    .start-card-subtitle {
-      font-size: 12px;
-      color: var(--text-400);
-      margin-top: 2px;
-    }
-
-    .res-btn-primary, .res-btn-secondary {
+    .res-btn-primary {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      height: 38px;
-      padding: 0 16px;
+      justify-content: center;
+      height: 40px;
+      padding: 0 20px;
+      background: #2AA7FF;
+      border: 1px solid #2AA7FF;
       border-radius: 6px;
-      font-family: 'Inter', sans-serif;
-      font-weight: 600;
-      font-size: 13px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: #fff;
       text-decoration: none;
-      cursor: pointer;
       white-space: nowrap;
-      transition: background 0.12s, border-color 0.12s, color 0.12s;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.12s;
     }
+    .res-btn-primary:hover { background: var(--blue-hover); }
 
-    .res-btn-primary  { background: var(--blue); color: #fff; border: 1.5px solid var(--blue); }
-    .res-btn-primary:hover  { background: var(--blue-hover); border-color: var(--blue-hover); }
-    .res-btn-secondary { background: #fff; color: var(--text-900); border: 1.5px solid var(--border-mid); }
-    .res-btn-secondary:hover { border-color: var(--text-900); }
+    .res-btn-outline {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 40px;
+      padding: 0 20px;
+      background: #fff;
+      border: 1px solid #D1D5DB;
+      border-radius: 6px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: #111827;
+      text-decoration: none;
+      white-space: nowrap;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: border-color 0.12s;
+    }
+    .res-btn-outline:hover { border-color: #111827; }
 
-
-    /* ── Card footer / navigation ── */
+    /* Dialog footer */
     .card-footer {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 40px 20px;
-      border-top: 1px solid var(--border);
+      padding-top: 8px;
+      flex-shrink: 0;
     }
 
     .btn-back {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 5px;
-      background: none;
-      border: none;
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
+      gap: 8px;
+      height: 40px;
+      padding: 0 20px;
+      background: var(--white);
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
       font-weight: 500;
-      color: var(--text-400);
+      color: var(--gray-900);
       cursor: pointer;
-      padding: 6px 0;
-      transition: color 0.12s;
+      transition: border-color 0.12s;
     }
-
-    .btn-back:hover { color: var(--text-900); }
+    .btn-back:hover { border-color: var(--gray-900); }
     .btn-back.invisible { visibility: hidden; pointer-events: none; }
 
     .btn-continue {
-      height: 36px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 40px;
       padding: 0 20px;
       background: var(--blue);
-      border: none;
+      border: 1px solid var(--blue);
       border-radius: 6px;
-      font-family: 'Inter', sans-serif;
-      font-weight: 600;
-      font-size: 13px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
       color: #fff;
       cursor: pointer;
+      transition: background 0.12s;
+    }
+    .btn-continue:disabled {
+      background: var(--gray-200);
+      border-color: var(--gray-200);
+      color: #9CA3AF;
+      cursor: not-allowed;
+    }
+    .btn-continue:not(:disabled):hover { background: var(--blue-hover); }
+  </style>
+
+  <!-- Time & Activity Report styles -->
+  <style>
+    /* ── TAR layout ── */
+    .tar-page {
+      min-height: 100vh;
+      background: #f9fafb;
+      font-family: 'Roboto', sans-serif;
+    }
+    .tar-topnav {
+      padding: 20px 48px 0;
+      background: #fff;
+    }
+    .tar-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 13px;
+      color: #374151;
+      text-decoration: none;
+      margin-bottom: 8px;
+    }
+    .tar-back .material-symbols-rounded { font-size: 16px !important; }
+    .tar-back:hover { color: #2ba7ff; }
+    .tar-heading {
+      font-size: 22px;
+      font-weight: 500;
+      color: #111827;
+      padding: 8px 48px 20px;
+      background: #fff;
+    }
+
+    /* ── Sticky filters bar ── */
+    .tar-filters-bar {
+      position: sticky;
+      top: 48px;
+      z-index: 40;
+      background: #fff;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+      padding: 12px 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .tar-filters-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .tar-filters-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .tar-filters-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tar-filters-bottom {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Filter controls */
+    .tar-filter-select-wrap {
+      position: relative;
+      display: inline-block;
+    }
+    .tar-filter-btn {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: background 0.12s, opacity 0.12s;
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid #D1D5DB;
+      border-radius: 8px;
+      background: #fff;
+      font: 400 14px/1 'Roboto', sans-serif;
+      color: #374151;
+      cursor: pointer;
+      white-space: nowrap;
     }
+    .tar-filter-btn .material-symbols-rounded { font-size: 16px !important; color: #6B7280; }
+    .tar-filter-btn:hover { border-color: #9CA3AF; }
 
-    .btn-continue:disabled {
-      background: var(--border);
-      color: var(--text-400);
-      cursor: not-allowed;
+    /* Date range button */
+    .tar-date-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid #D1D5DB;
+      border-radius: 8px;
+      background: #fff;
+      font: 400 14px/1 'Roboto', sans-serif;
+      color: #374151;
+      cursor: pointer;
+      min-width: 240px;
     }
-
-    .btn-continue:not(:disabled):hover { background: var(--blue-hover); }
-
-    /* Step counter pills at footer */
-    .step-counter {
-      font-size: 12px;
+    .tar-date-btn .material-symbols-rounded { font-size: 18px !important; color: #2ba7ff; }
+    .tar-tz {
       font-weight: 500;
-      color: var(--text-400);
+      font-size: 14px;
+      color: #111827;
+    }
+
+    /* Group by label + select */
+    .tar-groupby-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 64px;
+    }
+    .tar-groupby-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #9CA3AF;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .tar-groupby-select-wrap {
+      position: relative;
+    }
+    .tar-groupby-select {
+      appearance: none;
+      -webkit-appearance: none;
+      height: 42px;
+      padding: 0 36px 0 12px;
+      border: 1px solid #E5E7EB;
+      border-left: 4px solid #2ba7ff;
+      border-radius: 8px;
+      background: #F9FAFB;
+      font: 400 14px/1 'Roboto', sans-serif;
+      color: #374151;
+      cursor: pointer;
+      min-width: 160px;
+    }
+    .tar-groupby-select:focus { outline: none; box-shadow: 0 0 0 2px rgba(1,104,221,.15); }
+    .tar-groupby-arrow {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px !important;
+      color: #6B7280;
+      pointer-events: none;
+    }
+
+    /* Action buttons */
+    .tar-icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border: 1px solid #2ba7ff;
+      border-radius: 6px;
+      background: #fff;
+      color: #2ba7ff;
+      cursor: pointer;
+      transition: background 120ms;
+    }
+    .tar-icon-btn:hover { background: rgba(1,104,221,0.06); }
+    .tar-icon-btn .material-symbols-rounded { font-size: 18px !important; }
+
+    .tar-filter-action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 40px;
+      padding: 0 20px;
+      border: 1px solid #2ba7ff;
+      border-radius: 6px;
+      background: #fff;
+      color: #2ba7ff;
+      font: 400 14px/1 'Roboto', sans-serif;
+      cursor: pointer;
+      transition: background 120ms;
+    }
+    .tar-filter-action-btn:hover { background: rgba(1,104,221,0.06); }
+    .tar-filter-action-btn .material-symbols-rounded { font-size: 18px !important; }
+
+    .tar-save-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 40px;
+      padding: 0 20px;
+      border: 1px solid #2ba7ff;
+      border-radius: 6px;
+      background: #2ba7ff;
+      color: #fff;
+      font: 500 14px/1 'Roboto', sans-serif;
+      cursor: pointer;
+      transition: background 120ms;
+    }
+    .tar-save-btn:hover { background: #0158C4; }
+    .tar-save-btn .material-symbols-rounded { font-size: 18px !important; }
+
+    /* ── Stats row ── */
+    .tar-stats {
+      display: flex;
+      gap: 20px;
+      padding: 24px 48px 0;
+    }
+    .tar-stat-card {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .tar-stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      background: #DBEAFE;
+      color: #1D4ED8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .tar-stat-icon .material-symbols-rounded { font-size: 24px !important; }
+    .tar-stat-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #6B7280;
+      margin-bottom: 2px;
+    }
+    .tar-stat-value {
+      font-size: 24px;
+      font-weight: 600;
+      color: #0F172A;
+      line-height: 1.2;
+    }
+
+    /* ── Chart ── */
+    .tar-chart-wrap {
+      margin: 20px 48px 0;
+    }
+    .tar-chart-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px 10px 20px;
+      border: 1px solid #E5E7EB;
+      border-bottom: none;
+      border-radius: 8px 8px 0 0;
+      background: #fff;
+      cursor: pointer;
+    }
+    .tar-chart-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: #6B7280;
+    }
+    .tar-chart-collapse {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+    .tar-chart-collapse .material-symbols-rounded { font-size: 18px !important; color: #6B7280; }
+    .tar-chart-body {
+      padding: 16px 20px 32px;
+      border: 1px solid #E5E7EB;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      background: #fff;
+    }
+    .tar-chart-metric-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .tar-metric-wrap { position: relative; }
+    .tar-metric-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #9CA3AF;
+      margin-bottom: 4px;
+    }
+    .tar-metric-select {
+      appearance: none;
+      -webkit-appearance: none;
+      height: 40px;
+      padding: 0 32px 0 12px;
+      border: 1px solid #E5E7EB;
+      border-left: 4px solid #2ba7ff;
+      border-radius: 8px;
+      background: #F9FAFB;
+      font: 400 13px/1 'Roboto', sans-serif;
+      color: #374151;
+      cursor: pointer;
+      min-width: 150px;
+    }
+    .tar-metric-arrow {
+      position: absolute;
+      right: 8px;
+      bottom: 11px;
+      font-size: 14px !important;
+      color: #6B7280;
+      pointer-events: none;
+    }
+    .tar-chart-legend {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .tar-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: #6B7280;
+    }
+    .tar-legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    /* Bar chart */
+    .tar-bar-chart {
+      position: relative;
+      height: 220px;
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      padding-left: 40px;
+      padding-bottom: 24px;
+      overflow-x: auto;
+    }
+    .tar-bar-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      min-width: 28px;
+    }
+    .tar-bar {
+      width: 14px;
+      border-radius: 4px 4px 0 0;
+      background: #2AA7FF;
+      transition: opacity 120ms;
+    }
+    .tar-bar:hover { opacity: 0.8; }
+    .tar-bar-label {
+      font-size: 9px;
+      color: #9CA3AF;
+      transform: rotate(-45deg);
+      transform-origin: top left;
+      margin-top: 6px;
+      white-space: nowrap;
+      width: 60px;
+    }
+    .tar-y-axis {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 24px;
+      width: 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-right: 6px;
+    }
+    .tar-y-label { font-size: 10px; color: #9CA3AF; }
+
+    /* ── Table ── */
+    .tar-table-wrap {
+      margin: 16px 48px 48px;
+    }
+    .tar-table-container {
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .tar-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .tar-table thead th {
+      background: #F9FAFB;
+      padding: 8px 12px;
+      border-right: 1px solid #E5E7EB;
+      font-weight: 600;
+      font-size: 13px;
+      color: #1F2937;
+      text-align: left;
+    }
+    .tar-table thead th:last-child { border-right: none; }
+    .tar-table tbody tr {
+      border-top: 1px solid #E5E7EB;
+      border-bottom: 1px solid #E5E7EB;
+      cursor: pointer;
+      transition: background 100ms;
+    }
+    .tar-table tbody tr:hover { background: #F9FAFB; }
+    .tar-table tbody td {
+      padding: 8px 12px;
+      border-right: 1px solid #E5E7EB;
+      font-size: 13px;
+      font-weight: 500;
+      color: #374151;
+    }
+    .tar-table tbody td:last-child { border-right: none; }
+
+    /* Row expander */
+    .tar-row-expand {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .tar-chevron {
+      font-size: 18px !important;
+      color: #6B7280;
+      transition: transform 200ms ease;
+      flex-shrink: 0;
+    }
+    .tar-row-text { white-space: nowrap; }
+
+    /* Avatar stack */
+    .tar-avatar-stack {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tar-avatars {
+      display: flex;
+      align-items: center;
+    }
+    .tar-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      font-weight: 700;
+      color: #fff;
+      margin-left: -8px;
+      flex-shrink: 0;
+    }
+    .tar-avatars .tar-avatar:first-child { margin-left: 0; }
+    .tar-overflow-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 22px;
+      padding: 0 8px;
+      border-radius: 99px;
+      background: #EFF6FF;
+      color: #1D4ED8;
+      border: 1px solid #3B82F6;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    /* Count badge */
+    .tar-count-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+      height: 24px;
+      padding: 0 8px;
+      border-radius: 99px;
+      background: #DBEAFE;
+      color: #1E40AF;
+      font-size: 11px;
+      font-weight: 500;
+      margin-right: 4px;
+    }
+
+    /* Table footer */
+    .tar-table-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-top: 1px solid #E5E7EB;
+      font-size: 13px;
+      color: #6B7280;
+    }
+    .tar-pagination {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .tar-page-active {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      background: #EFF6FF;
+      color: #2ba7ff;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .tar-per-page {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tar-per-page select {
+      border: 1px solid #D1D5DB;
+      border-radius: 4px;
+      padding: 2px 24px 2px 8px;
+      font-size: 13px;
+      color: #374151;
+      appearance: none;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B7280' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") no-repeat right 6px center;
     }
   </style>
 </head>
 <body>
 
-<!-- Top nav -->
-<nav class="topnav">
-  <a href="#" class="hs-logo">
-    <div class="hs-mark">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <rect x="2" y="2" width="5" height="5" rx="1" fill="white"/>
-        <rect x="9" y="2" width="5" height="5" rx="1" fill="white"/>
-        <rect x="2" y="9" width="5" height="5" rx="1" fill="white"/>
-        <rect x="9" y="9" width="5" height="5" rx="1" fill="white" opacity="0.45"/>
-      </svg>
+<div id="shell-content">
+  <!-- ── Time & Activity Report (default view) ── -->
+  <div id="tar-view">
+    <div class="tar-page">
+
+      <div class="tar-topnav">
+        <a href="#" class="tar-back" onclick="return false">
+          <span class="material-symbols-rounded">arrow_back_ios</span>
+          Reports
+        </a>
+      </div>
+      <h2 class="tar-heading">Time and activity report</h2>
+
+      <div class="tar-filters-bar">
+        <div class="tar-filters-top">
+          <div class="tar-filters-left">
+            <button class="tar-filter-btn">
+              All members
+              <span class="material-symbols-rounded">expand_more</span>
+            </button>
+            <button class="tar-date-btn">
+              <span class="material-symbols-rounded">calendar_month</span>
+              Sun, Feb 1, 2026 · Tue, Mar 31, 2026
+            </button>
+            <span class="tar-tz">EDT</span>
+          </div>
+          <div class="tar-filters-right">
+            <button class="tar-icon-btn" title="Export" onclick="startExport()">
+              <span class="material-symbols-rounded" style="font-variation-settings:'FILL' 0">download</span>
+            </button>
+            <button class="tar-icon-btn" title="Send report via email">
+              <span class="material-symbols-rounded" style="font-variation-settings:'FILL' 0">send</span>
+            </button>
+            <button class="tar-icon-btn" title="Schedule report">
+              <span class="material-symbols-rounded" style="font-variation-settings:'FILL' 0">schedule</span>
+            </button>
+            <button class="tar-filter-action-btn">
+              <span class="material-symbols-rounded" style="font-variation-settings:'FILL' 0">filter_alt</span>
+              Filter
+            </button>
+            <button class="tar-save-btn">
+              <span class="material-symbols-rounded" style="font-variation-settings:'FILL' 0">save</span>
+              Save
+            </button>
+          </div>
+        </div>
+        <div class="tar-filters-bottom">
+          <div class="tar-groupby-wrap">
+            <span class="tar-groupby-label">Group by</span>
+            <div class="tar-groupby-select-wrap">
+              <select class="tar-groupby-select">
+                <option>Project</option>
+                <option>Member</option>
+                <option>Date</option>
+              </select>
+              <span class="material-symbols-rounded tar-groupby-arrow">expand_more</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="tar-stats">
+        <div class="tar-stat-card">
+          <div class="tar-stat-icon"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1">schedule</span></div>
+          <div>
+            <div class="tar-stat-label">Total hours</div>
+            <div class="tar-stat-value">1,284h 32m</div>
+          </div>
+        </div>
+        <div class="tar-stat-card">
+          <div class="tar-stat-icon"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1">trending_up</span></div>
+          <div>
+            <div class="tar-stat-label">Avg. activity level</div>
+            <div class="tar-stat-value">76%</div>
+          </div>
+        </div>
+        <div class="tar-stat-card">
+          <div class="tar-stat-icon" style="background:#DBEAFE;color:#1E40AF"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1">payments</span></div>
+          <div>
+            <div class="tar-stat-label">Total amount owed</div>
+            <div class="tar-stat-value">$48,320.00</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <div class="tar-chart-wrap">
+        <div class="tar-chart-header">
+          <span class="tar-chart-title">Activity over time</span>
+          <button class="tar-chart-collapse"><span class="material-symbols-rounded">expand_less</span></button>
+        </div>
+        <div class="tar-chart-body">
+          <div class="tar-chart-metric-row">
+            <div class="tar-metric-wrap">
+              <div class="tar-metric-label">Metric</div>
+              <div class="tar-groupby-select-wrap">
+                <select class="tar-metric-select">
+                  <option>Tracked hours</option>
+                  <option>Activity level</option>
+                  <option>Earnings</option>
+                </select>
+                <span class="material-symbols-rounded tar-metric-arrow">expand_more</span>
+              </div>
+            </div>
+            <div class="tar-chart-legend">
+              <div class="tar-legend-item"><div class="tar-legend-dot" style="background:#2AA7FF"></div>Tracked hours</div>
+            </div>
+          </div>
+          <div style="position:relative;height:280px;width:100%">
+            <canvas id="tar-chart-canvas"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <!-- Export toast is global, rendered outside this section -->
+
+      <div class="tar-table-wrap">
+        <div class="tar-table-container">
+          <table class="tar-table">
+            <thead>
+              <tr>
+                <th>Project / Member</th>
+                <th>Team</th>
+                <th>Tracked</th>
+                <th>Activity</th>
+                <th>Earned</th>
+                <th>Manual</th>
+                <th>Idle</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="tar-row-expand"><span class="material-symbols-rounded tar-chevron">chevron_right</span><span class="tar-row-text">Hubstaff Design System</span></div></td>
+                <td><div class="tar-avatar-stack"><div class="tar-avatars"><div class="tar-avatar" style="background:#6366F1">AH</div><div class="tar-avatar" style="background:#EC4899">MR</div><div class="tar-avatar" style="background:#F59E0B">JS</div></div><span class="tar-overflow-badge">+4</span></div></td>
+                <td>284h 12m</td><td>82%</td><td>$12,480.00</td><td>0h 0m</td><td>3h 20m</td>
+              </tr>
+              <tr>
+                <td><div class="tar-row-expand"><span class="material-symbols-rounded tar-chevron">chevron_right</span><span class="tar-row-text">Payments Calculator</span></div></td>
+                <td><div class="tar-avatar-stack"><div class="tar-avatars"><div class="tar-avatar" style="background:#10B981">GS</div><div class="tar-avatar" style="background:#3B82F6">KL</div></div></div></td>
+                <td>196h 44m</td><td>71%</td><td>$9,640.00</td><td>0h 0m</td><td>5h 10m</td>
+              </tr>
+              <tr>
+                <td><div class="tar-row-expand"><span class="material-symbols-rounded tar-chevron">chevron_right</span><span class="tar-row-text">Mobile App Redesign</span></div></td>
+                <td><div class="tar-avatar-stack"><div class="tar-avatars"><div class="tar-avatar" style="background:#EF4444">PR</div><div class="tar-avatar" style="background:#8B5CF6">NW</div><div class="tar-avatar" style="background:#06B6D4">TC</div></div><span class="tar-overflow-badge">+2</span></div></td>
+                <td>320h 08m</td><td>79%</td><td>$14,200.00</td><td>1h 30m</td><td>4h 45m</td>
+              </tr>
+              <tr>
+                <td><div class="tar-row-expand"><span class="material-symbols-rounded tar-chevron">chevron_right</span><span class="tar-row-text">Backend Infrastructure</span></div></td>
+                <td><div class="tar-avatar-stack"><div class="tar-avatars"><div class="tar-avatar" style="background:#F97316">AM</div><div class="tar-avatar" style="background:#14B8A6">SB</div></div></div></td>
+                <td>240h 00m</td><td>88%</td><td>$8,800.00</td><td>0h 0m</td><td>1h 55m</td>
+              </tr>
+              <tr>
+                <td><div class="tar-row-expand"><span class="material-symbols-rounded tar-chevron">chevron_right</span><span class="tar-row-text">Customer Support Tools</span></div></td>
+                <td><div class="tar-avatar-stack"><div class="tar-avatars"><div class="tar-avatar" style="background:#0EA5E9">LJ</div></div></div></td>
+                <td>243h 28m</td><td>65%</td><td>$3,200.00</td><td>2h 15m</td><td>8h 30m</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="tar-table-footer">
+            <span>Showing 5 of 18 projects</span>
+            <div class="tar-pagination">
+              <span class="tar-page-active">1</span>
+              <span style="padding:0 4px;color:#6B7280;">2 3 4</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
-    <span class="hs-name">Hubstaff</span>
-  </a>
-  <span class="nav-sep">/</span>
-  <span class="nav-crumb">Financials</span>
-  <span class="nav-sep">/</span>
-  <span class="nav-crumb-active">Payments Calculator</span>
-</nav>
+  </div><!-- /tar-view -->
+  <!-- ── Payments landing page ── -->
+  <div id="landing-view" style="display:none">
+  <div class="page">
 
-<!-- Page -->
-<div class="page">
-  <div class="card" id="card">
+    <section class="hero">
+      <h1 class="hero-title">Pay your team in one place</h1>
+      <div class="hero-subtitle-wrap">
+        <p class="hero-subtitle">Save time with our automated solution that converts tracked hours into payments with minimal effort.</p>
+      </div>
+      <div class="hero-btns">
+        <button class="btn-hero-primary">
+          <span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1">rocket_launch</span>
+          Get started now
+        </button>
+        <a href="https://meetings.hubspot.com/andrew-martin10/payments-meetingdemo" target="_blank" class="btn-hero-outline">
+          <span class="material-symbols-rounded">calendar_month</span>
+          Schedule a demo
+        </a>
+        <button class="btn-hero-ghost" id="remind-btn-landing" onclick="document.getElementById('remind-btn-landing').style.display='none'">
+          <span class="material-symbols-rounded">notifications</span>
+          Remind me later
+        </button>
+      </div>
+      <div class="hero-illustration">
+        <img src="illustration.png" alt="Hubstaff Payments illustration">
+      </div>
+    </section>
 
-    <!-- Progress -->
-    <div class="progress-track">
-      <div class="progress-fill" id="progress-fill" style="width:20%"></div>
+    <section class="calc-section">
+      <div class="calc-card">
+        <div class="calc-left">
+          <h2 class="calc-title">Find out how your team could <span class="calc-title-highlight">save time and money</span> on payroll</h2>
+          <div class="calc-btns">
+            <button class="btn-calc-primary" onclick="openModal()">Get my estimate</button>
+            <a href="https://meetings.hubspot.com/andrew-martin10/payments-meetingdemo" target="_blank" class="btn-calc-outline">Talk to a specialist</a>
+          </div>
+        </div>
+        <div class="calc-right">
+          <img src="payroll-table.png?v=2" alt="Payroll table preview" style="width:100%;height:auto;display:block;border-radius:8px;">
+        </div>
+      </div>
+    </section>
+
+    <section class="partners-section">
+      <p class="section-label">Our trusted partners</p>
+      <div class="partners-strip">
+        <div class="partner-item"><img class="partner-logo" src="logos/wise.png" alt="Wise"><span class="partner-name">Wise</span></div>
+        <div class="partner-divider"></div>
+        <div class="partner-item"><img class="partner-logo" src="logos/paypal.png" alt="PayPal"><span class="partner-name">Paypal</span></div>
+        <div class="partner-divider"></div>
+        <div class="partner-item"><img class="partner-logo" src="logos/payoneer.png" alt="Payoneer"><span class="partner-name">Payoneer</span></div>
+        <div class="partner-divider"></div>
+        <div class="partner-item"><img class="partner-logo" src="logos/bitwage.png" alt="Bitwage"><span class="partner-name">Bitwage</span></div>
+        <div class="partner-divider"></div>
+        <div class="partner-item"><img class="partner-logo" src="logos/deel.png" alt="Deel"><span class="partner-name">Deel</span></div>
+        <div class="partner-divider"></div>
+        <div class="partner-item"><img class="partner-logo" src="logos/gusto.png" alt="Gusto"><span class="partner-name">Gusto</span></div>
+      </div>
+    </section>
+
+    <section class="features-section">
+      <p class="section-heading">Powerful features for modern teams</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-iconbox"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1">language</span></div>
+          <div class="feature-title">International payments</div>
+          <p class="feature-desc">Pay team members anywhere in the world with support for multiple currencies and methods.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-iconbox"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1">schedule</span></div>
+          <div class="feature-title">Hourly and fixed-based earnings</div>
+          <p class="feature-desc">Flexible payment structures supporting both hourly rates and fixed salaries.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-iconbox"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1">task</span></div>
+          <div class="feature-title">Flexible approval system</div>
+          <p class="feature-desc">Set different levels of control over payroll and payments with customizable approval workflows.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-iconbox"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1">contract</span></div>
+          <div class="feature-title">Custom policies</div>
+          <p class="feature-desc">Configure time-off, overtime, and break policies tailored to your organization's needs.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-iconbox"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1">currency_exchange</span></div>
+          <div class="feature-title">Recurring and one-time bonuses</div>
+          <p class="feature-desc">Reward your team with flexible bonus structures for performance and milestones.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-iconbox"><span class="material-symbols-rounded" style="font-variation-settings:'FILL' 1">table</span></div>
+          <div class="feature-title">Automated calculations</div>
+          <p class="feature-desc">Earnings are automatically calculated based on tracked time and configured rates.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="testimonials-section">
+      <p class="section-label">What our Valuable Clients say about us</p>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="stars"><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span></div>
+          <p class="testimonial-text">"Hubstaff really streamlines our compensation process. It's intuitive and it saves us time..."</p>
+          <div class="testimonial-author"><div class="author-name">Ada Hyasmin Dalian</div><div class="author-company">BloomBright</div></div>
+        </div>
+        <div class="testimonial-card">
+          <div class="stars"><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span></div>
+          <p class="testimonial-text">"In total it takes maybe 15 minutes."</p>
+          <div class="testimonial-author"><div class="author-name">RocketCare</div></div>
+        </div>
+        <div class="testimonial-card">
+          <div class="stars"><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span></div>
+          <p class="testimonial-text">"One of the main reasons we picked Hubstaff is for the payroll integrations… It's about peace of mind."</p>
+          <div class="testimonial-author"><div class="author-name">Slash Staffing</div></div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+  </div><!-- /landing-view -->
+</div><!-- /shell-content -->
+
+<!-- ── View 2: Entry point dialog ── -->
+<div id="view2-content" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.4);">
+  <div class="v2-dialog" role="dialog" aria-modal="true" aria-labelledby="v2-title">
+
+    <!-- Header -->
+    <div class="v2-header">
+      <h2 class="v2-title" id="v2-title">Simplify payroll with Hubstaff payments</h2>
+      <button class="v2-close" onclick="document.getElementById('view2-content').style.display='none'" aria-label="Close">
+        <span class="material-symbols-rounded" style="font-size:18px;font-variation-settings:'FILL' 0">close</span>
+      </button>
     </div>
 
     <!-- Body -->
-    <div class="card-body">
+    <div class="v2-body">
 
-      <!-- Q1 -->
-      <div class="screen active" id="scr-q1">
-        <div class="step-label"><span class="step-dot"></span>Step 1 of 5</div>
-        <h2 class="q-title">How many contractors do you pay?</h2>
-        <p class="q-sub">Include anyone you pay regularly, regardless of location.</p>
-        <div class="options">
-          <button class="opt" data-q="q1" data-v="1-10">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">1–10 people</span>
-          </button>
-          <button class="opt" data-q="q1" data-v="11-25">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">11–25 people</span>
-          </button>
-          <button class="opt" data-q="q1" data-v="26-50">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">26–50 people</span>
-          </button>
-          <button class="opt" data-q="q1" data-v="51-100">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">51–100 people</span>
-          </button>
-          <button class="opt" data-q="q1" data-v="100+">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">100+ people</span>
-          </button>
+      <!-- Top card: feature list + Get started -->
+      <div class="v2-card">
+        <div class="v2-card-text">
+          <p class="v2-card-title">You're already tracking time in Hubstaff.</p>
+          <p class="v2-card-sub">Now automate paying your team — no extra tools or manual work. <a href="#" class="v2-link">Learn more</a></p>
         </div>
-      </div>
-
-      <!-- Q2 -->
-      <div class="screen" id="scr-q2">
-        <div class="step-label"><span class="step-dot"></span>Step 2 of 5</div>
-        <h2 class="q-title">How often do you run payroll?</h2>
-        <p class="q-sub">We'll use this to estimate your total time or fees per year.</p>
-        <div class="options">
-          <button class="opt" data-q="q2" data-v="weekly">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">Weekly</span>
-          </button>
-          <button class="opt" data-q="q2" data-v="biweekly">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">Every two weeks</span>
-          </button>
-          <button class="opt" data-q="q2" data-v="monthly">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">Once a month</span>
-          </button>
-          <button class="opt" data-q="q2" data-v="other">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">Other</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Q3 -->
-      <div class="screen" id="scr-q3">
-        <div class="step-label"><span class="step-dot"></span>Step 3 of 5</div>
-        <h2 class="q-title">How do you currently pay your team?</h2>
-        <p class="q-sub">Pick the option that best describes your setup today.</p>
-        <div class="options">
-          <button class="opt" data-q="q3" data-v="manual">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">Manually — I calculate amounts and send each payment myself</span>
-          </button>
-          <button class="opt" data-q="q3" data-v="platform">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">Through a payroll platform <span class="opt-note">(Deel, Rippling, Remote, ADP)</span></span>
-          </button>
-          <button class="opt" data-q="q3" data-v="accountant">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">Through an accountant or bookkeeper</span>
-          </button>
-          <button class="opt" data-q="q3" data-v="unsure">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">I'm not sure</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Q4A – provider -->
-      <div class="screen" id="scr-q4a">
-        <div class="step-label"><span class="step-dot"></span>Step 4 of 5</div>
-        <h2 class="q-title">Which provider do you use to send payments?</h2>
-        <p class="q-sub">Select the one you use most often.</p>
-        <div class="options">
-          <button class="opt" data-q="q4a" data-v="wise">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">Wise</span>
-          </button>
-          <button class="opt" data-q="q4a" data-v="paypal">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">PayPal</span>
-          </button>
-          <button class="opt" data-q="q4a" data-v="payoneer">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">Payoneer</span>
-          </button>
-          <button class="opt" data-q="q4a" data-v="bank">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">Local bank transfer</span>
-          </button>
-          <button class="opt" data-q="q4a" data-v="mix">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">A mix of providers</span>
-          </button>
-          <button class="opt" data-q="q4a" data-v="other">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">Something else</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Q5A – time per cycle -->
-      <div class="screen" id="scr-q5a">
-        <div class="step-label"><span class="step-dot"></span>Step 4 of 5</div>
-        <h2 class="q-title">How long does one payroll cycle take you?</h2>
-        <p class="q-sub">From calculating amounts to sending the last payment.</p>
-        <div class="options">
-          <button class="opt" data-q="q5a" data-v="lt1">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">Less than 1 hour</span>
-          </button>
-          <button class="opt" data-q="q5a" data-v="1-3">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">1–3 hours</span>
-          </button>
-          <button class="opt" data-q="q5a" data-v="3-5">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">3–5 hours</span>
-          </button>
-          <button class="opt" data-q="q5a" data-v="5-10">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">5–10 hours</span>
-          </button>
-          <button class="opt" data-q="q5a" data-v="10+">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">10+ hours</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Q4B – monthly volume -->
-      <div class="screen" id="scr-q4b">
-        <div class="step-label"><span class="step-dot"></span>Step 4 of 5</div>
-        <h2 class="q-title">What's your monthly payroll volume?</h2>
-        <p class="q-sub">Total amount you send your team per month, roughly.</p>
-        <div class="options">
-          <button class="opt" data-q="q4b" data-v="lt10k">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">Less than $10,000</span>
-          </button>
-          <button class="opt" data-q="q4b" data-v="10-30k">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">$10,000 – $30,000</span>
-          </button>
-          <button class="opt" data-q="q4b" data-v="30-50k">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">$30,000 – $50,000</span>
-          </button>
-          <button class="opt" data-q="q4b" data-v="50-100k">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">$50,000 – $100,000</span>
-          </button>
-          <button class="opt" data-q="q4b" data-v="100k+">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">$100,000+</span>
-          </button>
-          <button class="opt" data-q="q4b" data-v="notsure">
-            <div class="radio"><div class="radio-dot"></div></div>
-            <span class="opt-label">Not sure</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Q5B – fees -->
-      <div class="screen" id="scr-q5b">
-        <div class="step-label"><span class="step-dot"></span>Step 5 of 5</div>
-        <h2 class="q-title">How much do you spend on payment fees per month?</h2>
-        <p class="q-sub">An estimate is fine — we just need a rough number.</p>
-        <div class="fee-wrap">
-          <div class="toggle-row">
-            <button class="ttab active" id="tab-pct"    onclick="setFeeMode('pct')">Percentage (%)</button>
-            <button class="ttab"        id="tab-dollar" onclick="setFeeMode('dollar')">Dollar amount ($)</button>
+        <div class="v2-features">
+          <div class="v2-feature-row">
+            <div class="v2-icon-box" style="background:#D4EDFF">
+              <span class="material-symbols-rounded" style="color:#0A4B96;font-size:18px;font-variation-settings:'FILL' 1">update</span>
+            </div>
+            <span class="v2-feature-text">Convert tracked time into automated payments</span>
           </div>
-          <input
-            class="fee-input-field"
-            id="fee-input"
-            type="number"
-            min="0"
-            step="0.1"
-            placeholder="e.g. 2.5"
-            oninput="onFeeInput()"
-          >
-          <p class="fee-hint" id="fee-hint">Enter the percentage of your total monthly payroll volume</p>
+          <div class="v2-feature-row">
+            <div class="v2-icon-box" style="background:#D5F5F6">
+              <span class="material-symbols-rounded" style="color:#05505c;font-size:18px;font-variation-settings:'FILL' 1">data_check</span>
+            </div>
+            <span class="v2-feature-text">Eliminate spreadsheets and exports</span>
+          </div>
+          <div class="v2-feature-row">
+            <div class="v2-icon-box" style="background:#DEF7EC">
+              <span class="material-symbols-rounded" style="color:#03543f;font-size:18px;font-variation-settings:'FILL' 1">monetization_on</span>
+            </div>
+            <span class="v2-feature-text">Pay contractors worldwide with trusted partners</span>
+          </div>
+        </div>
+        <button class="v2-btn-primary" onclick="goToLanding()">Get started</button>
+      </div>
+
+      <!-- Bottom banner: estimate -->
+      <div class="v2-banner">
+        <div class="v2-banner-left">
+          <div class="v2-banner-text">
+            <p class="v2-banner-title">Find out how your team could<br><span style="color:#7F3CF2;font-weight:700">save time and money</span> on payroll</p>
+          </div>
+          <button class="v2-btn-outline" onclick="goToLanding(); setTimeout(openModal, 100)">Get my estimate</button>
+        </div>
+        <div class="v2-banner-right">
+          <img src="payroll-table.png?v=2" alt="" class="v2-banner-img">
         </div>
       </div>
 
-      <!-- Result -->
-      <div class="screen" id="scr-result">
+    </div><!-- /v2-body -->
 
-        <!-- Colored header -->
-        <div class="result-header" id="res-header">
-          <div class="result-header-icon" id="res-icon"></div>
-          <h2 class="result-header-headline" id="res-headline">You're spending time on payroll that you don't need to.</h2>
-        </div>
-
-        <!-- Body copy — two tiers -->
-        <div class="result-body-wrap">
-          <div class="result-body-highlight" id="res-body-highlight">You're currently paying around 3.0% in fees.</div>
-          <p   class="result-body-detail"    id="res-body-detail">Hubstaff Payments processes payroll at ~1% via Wise.</p>
-        </div>
-
-        <!-- Andrew card -->
-        <div class="andrew-card">
-          <div class="andrew-avatar" id="andrew-avatar">
-            <img src="https://server-assets.staging.hbstf.co/bd821271db/payroll/welcome_page/andrew_martin-4328b70da1c4186a1777cb28639b35f0e3987777badfc333d11d516b3881e6e9.png" alt="Andrew Martin" onerror="this.parentElement.textContent='AM'">
-          </div>
-          <div class="andrew-info">
-            <div class="andrew-name">Andrew Martin</div>
-            <div class="andrew-title">Payments Specialist · Hubstaff</div>
-          </div>
-          <a href="https://meetings.hubspot.com/andrew-martin" class="res-btn-primary" target="_blank" style="flex-shrink:0">
-            Book a call with Andrew
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 9.5L9.5 2.5M9.5 2.5H5M9.5 2.5V7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-        </div>
-
-        <!-- Start card -->
-        <div class="start-card">
-          <div class="start-card-icon">
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M11 2C11 2 7 6.5 7 11a4 4 0 0 0 8 0c0-4.5-4-9-4-9Z" stroke="#059669" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M8.5 14.5C7 16 6 18 6 18h10s-1-2-2.5-3.5" stroke="#059669" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M11 8v5" stroke="#059669" stroke-width="1.7" stroke-linecap="round"/>
-            </svg>
-          </div>
-          <div class="start-card-info">
-            <div class="start-card-name">Start using Payments</div>
-            <div class="start-card-subtitle">Get set up in minutes — no call needed.</div>
-          </div>
-          <a href="https://app.hubstaff.com/payments/setup" class="res-btn-secondary" target="_blank" style="flex-shrink:0">
-            Start setup now
-          </a>
-        </div>
-
+    <!-- Footer -->
+    <div class="v2-footer">
+      <button class="v2-btn-ghost" onclick="document.getElementById('view2-content').style.display='none'">Don't show me this again</button>
+      <div class="v2-footer-right">
+        <button class="v2-btn-secondary" onclick="document.getElementById('view2-content').style.display='none'">Maybe later</button>
+        <a href="https://meetings.hubspot.com/andrew-martin10/payments-meetingdemo" target="_blank" class="v2-btn-blue-outline">Talk to a specialist</a>
       </div>
-
-    </div><!-- /card-body -->
-
-    <!-- Footer: question navigation -->
-    <div class="card-footer" id="card-footer">
-      <button class="btn-back invisible" id="btn-back" onclick="goBack()">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 11L5 7l4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Back
-      </button>
-      <span class="step-counter" id="step-counter">1 / 5</span>
-      <button class="btn-continue" id="btn-continue" onclick="goNext()" disabled>
-        Continue
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M4 2.5l4.5 4-4.5 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
     </div>
 
-  </div><!-- /card -->
-</div><!-- /page -->
+  </div>
+</div>
+
+<!-- Modal overlay -->
+<div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal-inner" id="modal-inner">
+    <div class="card" id="card">
+
+      <!-- Header: step badge + progress bar -->
+      <div class="card-header" id="card-header">
+        <div class="card-header-top">
+          <span class="step-badge" id="step-badge">Step 1 of 5</span>
+          <button class="modal-close-btn" onclick="closeModal()">&#x2715;</button>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill" style="width:20%"></div>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="card-body">
+
+        <!-- Q1 -->
+        <div class="screen active" id="scr-q1">
+          <div class="q-head">
+            <h2 class="q-title">How many contractors do you pay?</h2>
+            <p class="q-sub">Include anyone you pay regularly, regardless of location.</p>
+          </div>
+          <div class="options">
+            <button class="opt" data-q="q1" data-v="1-10"><div class="radio"></div><span class="opt-label">1 to 10 people</span></button>
+            <button class="opt" data-q="q1" data-v="11-25"><div class="radio"></div><span class="opt-label">11 to 25 people</span></button>
+            <button class="opt" data-q="q1" data-v="26-50"><div class="radio"></div><span class="opt-label">26 to 50 people</span></button>
+            <button class="opt" data-q="q1" data-v="51-100"><div class="radio"></div><span class="opt-label">51 to 100 people</span></button>
+            <button class="opt" data-q="q1" data-v="100+"><div class="radio"></div><span class="opt-label">100+ people</span></button>
+            <button class="opt" data-q="q1" data-v="notsure"><div class="radio"></div><span class="opt-label">Not sure</span></button>
+          </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="screen" id="scr-q2">
+          <div class="q-head">
+            <h2 class="q-title">How often do you run payroll?</h2>
+            <p class="q-sub">We'll use this to estimate your total time or fees per year.</p>
+          </div>
+          <div class="options">
+            <button class="opt" data-q="q2" data-v="weekly"><div class="radio"></div><span class="opt-label">Weekly</span></button>
+            <button class="opt" data-q="q2" data-v="biweekly"><div class="radio"></div><span class="opt-label">Every two weeks</span></button>
+            <button class="opt" data-q="q2" data-v="monthly"><div class="radio"></div><span class="opt-label">Once a month</span></button>
+            <button class="opt" data-q="q2" data-v="other"><div class="radio"></div><span class="opt-label">Other</span></button>
+            <button class="opt" data-q="q2" data-v="notsure"><div class="radio"></div><span class="opt-label">Not sure</span></button>
+          </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="screen" id="scr-q3">
+          <div class="q-head">
+            <h2 class="q-title">How do you currently pay your team?</h2>
+            <p class="q-sub">Pick the option that best describes your setup today.</p>
+          </div>
+          <div class="options">
+            <button class="opt" data-q="q3" data-v="manual"><div class="radio"></div><span class="opt-label">Manually — I calculate amounts and send each payment myself</span></button>
+            <button class="opt" data-q="q3" data-v="platform"><div class="radio"></div><span class="opt-label">Through a payroll platform <span class="opt-note">(Deel, Rippling, Remote, ADP)</span></span></button>
+            <button class="opt" data-q="q3" data-v="accountant"><div class="radio"></div><span class="opt-label">Through an accountant or bookkeeper</span></button>
+            <button class="opt" data-q="q3" data-v="unsure"><div class="radio"></div><span class="opt-label">I'm not sure</span></button>
+          </div>
+        </div>
+
+        <!-- Q4A -->
+        <div class="screen" id="scr-q4a">
+          <div class="q-head">
+            <h2 class="q-title">Which provider do you use to send payments?</h2>
+            <p class="q-sub">Select the one you use most often.</p>
+          </div>
+          <div class="options">
+            <button class="opt" data-q="q4a" data-v="wise"><div class="radio"></div><span class="opt-label">Wise</span></button>
+            <button class="opt" data-q="q4a" data-v="paypal"><div class="radio"></div><span class="opt-label">PayPal</span></button>
+            <button class="opt" data-q="q4a" data-v="payoneer"><div class="radio"></div><span class="opt-label">Payoneer</span></button>
+            <button class="opt" data-q="q4a" data-v="bank"><div class="radio"></div><span class="opt-label">Local bank transfer</span></button>
+            <button class="opt" data-q="q4a" data-v="mix"><div class="radio"></div><span class="opt-label">A mix of providers</span></button>
+            <button class="opt" data-q="q4a" data-v="other"><div class="radio"></div><span class="opt-label">Something else</span></button>
+            <button class="opt" data-q="q4a" data-v="notsure"><div class="radio"></div><span class="opt-label">Not sure</span></button>
+          </div>
+        </div>
+
+        <!-- Q5A -->
+        <div class="screen" id="scr-q5a">
+          <div class="q-head">
+            <h2 class="q-title">How long does one payroll cycle take you?</h2>
+            <p class="q-sub">From calculating amounts to sending the last payment.</p>
+          </div>
+          <div class="options">
+            <button class="opt" data-q="q5a" data-v="lt1"><div class="radio"></div><span class="opt-label">Less than 1 hour</span></button>
+            <button class="opt" data-q="q5a" data-v="1-3"><div class="radio"></div><span class="opt-label">1&#8211;3 hours</span></button>
+            <button class="opt" data-q="q5a" data-v="3-5"><div class="radio"></div><span class="opt-label">3&#8211;5 hours</span></button>
+            <button class="opt" data-q="q5a" data-v="5-10"><div class="radio"></div><span class="opt-label">5&#8211;10 hours</span></button>
+            <button class="opt" data-q="q5a" data-v="10+"><div class="radio"></div><span class="opt-label">10+ hours</span></button>
+            <button class="opt" data-q="q5a" data-v="notsure"><div class="radio"></div><span class="opt-label">Not sure</span></button>
+          </div>
+        </div>
+
+        <!-- Q4B -->
+        <div class="screen" id="scr-q4b">
+          <div class="q-head">
+            <h2 class="q-title">What's your monthly payroll volume?</h2>
+            <p class="q-sub">Total amount you send your team per month, roughly.</p>
+          </div>
+          <div class="options">
+            <button class="opt" data-q="q4b" data-v="lt10k"><div class="radio"></div><span class="opt-label">Less than $10,000</span></button>
+            <button class="opt" data-q="q4b" data-v="10-30k"><div class="radio"></div><span class="opt-label">$10,000 &#8211; $30,000</span></button>
+            <button class="opt" data-q="q4b" data-v="30-50k"><div class="radio"></div><span class="opt-label">$30,000 &#8211; $50,000</span></button>
+            <button class="opt" data-q="q4b" data-v="50-100k"><div class="radio"></div><span class="opt-label">$50,000 &#8211; $100,000</span></button>
+            <button class="opt" data-q="q4b" data-v="100k+"><div class="radio"></div><span class="opt-label">$100,000+</span></button>
+            <button class="opt" data-q="q4b" data-v="notsure"><div class="radio"></div><span class="opt-label">Not sure</span></button>
+          </div>
+        </div>
+
+        <!-- Q5B -->
+        <div class="screen" id="scr-q5b">
+          <div class="q-head">
+            <h2 class="q-title">How much do you spend on payment fees per month?</h2>
+            <p class="q-sub">An estimate is fine — we just need a rough number.</p>
+          </div>
+          <div class="fee-options">
+            <div class="fee-option" id="fee-opt-pct" onclick="selectFeeMode('pct')">
+              <div class="fee-opt-row"><div class="fee-radio" id="fee-radio-pct"></div><span class="opt-label">Percentage (%)</span></div>
+              <div class="fee-input-wrap">
+                <input class="fee-input-field" id="fee-input-pct" type="number" min="0" step="0.1" placeholder="e.g. 2.5" oninput="onFeeInput()" onclick="event.stopPropagation()">
+                <p class="fee-hint">Enter the percentage of your total monthly volume</p>
+              </div>
+            </div>
+            <div class="fee-option" id="fee-opt-dollar" onclick="selectFeeMode('dollar')">
+              <div class="fee-opt-row"><div class="fee-radio" id="fee-radio-dollar"></div><span class="opt-label">Amount (USD - dollar)</span></div>
+              <div class="fee-input-wrap">
+                <input class="fee-input-field" id="fee-input-dollar" type="number" min="0" step="1" placeholder="e.g. 500" oninput="onFeeInput()" onclick="event.stopPropagation()">
+                <p class="fee-hint">Enter your estimated monthly payment fees in USD</p>
+              </div>
+            </div>
+            <div class="fee-option" id="fee-opt-notsure" onclick="selectFeeMode('notsure')">
+              <div class="fee-opt-row"><div class="fee-radio" id="fee-radio-notsure"></div><span class="opt-label">Not sure</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Result -->
+        <div class="screen" id="scr-result">
+          <div class="res-header">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;width:100%;margin-bottom:10px">
+              <div class="res-icon" id="res-icon"></div>
+              <button onclick="closeModal()" aria-label="Close" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;flex-shrink:0;transition:background 0.12s" onmouseover="this.style.background='rgba(0,0,0,0.08)'" onmouseout="this.style.background='none'">
+                <span class="material-symbols-rounded" style="font-size:18px;font-variation-settings:'FILL' 0;color:#0A4B96">close</span>
+              </button>
+            </div>
+            <h2 class="res-headline" id="res-headline"></h2>
+          </div>
+          <div class="res-body">
+            <div class="res-text-block">
+              <div class="res-highlight" id="res-highlight"></div>
+              <p class="res-detail" id="res-detail"></p>
+            </div>
+            <div class="res-cards">
+              <div class="res-andrew-card">
+                <div class="res-avatar-wrap">
+                  <div class="res-avatar">
+                    <img src="https://ca.slack-edge.com/T0255PG4G-U08TNRNDHDM-6d09c3826872-192" alt="Andrew Martin">
+                  </div>
+                  <div class="res-avatar-badge">
+                    <img src="hs-badge.png" alt="Hubstaff" style="width:18px;height:18px;display:block;">
+                  </div>
+                </div>
+                <div class="res-card-info">
+                  <span class="res-card-name">Andrew Martin</span>
+                  <span class="res-card-title">Payments Specialist</span>
+                </div>
+                <a href="https://meetings.hubspot.com/andrew-martin" class="res-btn-primary" target="_blank">Book a call</a>
+              </div>
+              <div class="res-start-card">
+                <div class="res-start-icon">
+                  <img src="icon-payment-start-new.png" alt="" style="width:100%;height:100%;display:block;object-fit:contain;">
+                </div>
+                <div class="res-card-info">
+                  <span class="res-card-name">Start using payments</span>
+                  <span class="res-card-title">Get set up in minutes</span>
+                </div>
+                <a href="https://app.hubstaff.com/payments/setup" class="res-btn-outline" target="_blank">Start setup</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /card-body -->
+
+      <!-- Footer -->
+      <div class="card-footer" id="card-footer">
+        <button class="btn-back invisible" id="btn-back" onclick="goBack()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Back
+        </button>
+        <button class="btn-continue" id="btn-continue" onclick="goNext()" disabled>
+          Continue
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+
+    </div><!-- /card -->
+  </div><!-- /modal-inner -->
+</div><!-- /modal-overlay -->
 
 <script>
-  // ── State ─────────────────────────────────────────────────────
-  const answers = {};
-  let feeMode = 'pct';
-  let path    = null;
-  let history = ['q1'];
+// ── Modal ─────────────────────────────────────────────────────
+function openModal() {
+  // Reset state
+  Object.keys(answers).forEach(k => delete answers[k]);
+  feeMode = null;
+  path    = null;
+  history = ['q1'];
+  // Clear selections
+  document.querySelectorAll('.opt.selected').forEach(o => o.classList.remove('selected'));
+  document.querySelectorAll('.fee-option.selected').forEach(o => o.classList.remove('selected'));
+  const pctIn = document.getElementById('fee-input-pct');
+  const dolIn = document.getElementById('fee-input-dollar');
+  if (pctIn) pctIn.value = '';
+  if (dolIn) dolIn.value = '';
+  // Show
+  document.getElementById('modal-overlay').classList.add('open');
+  showScreen('q1');
+}
 
-  const SCREENS = ['q1','q2','q3','q4a','q5a','q4b','q5b','result'];
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
 
-  // Path lengths differ — use history length for live step count
-  function totalSteps() {
-    if (path === 'A') return 7; // q1 q2 q3 q4a q5a q4b q5b
-    if (path === 'B') return 5; // q1 q2 q3 q4b q5b
-    if (path === 'C') return 6; // q1 q2 q3 q5a q4a q4b
-    return 5; // before path is known
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+// ── Dialog state ──────────────────────────────────────────────
+const answers = {};
+let feeMode = null;
+let path    = null;
+let history = ['q1'];
+
+const SCREENS = ['q1','q2','q3','q4a','q5a','q4b','q5b','result'];
+
+function totalSteps() {
+  if (path === 'A') return 7;
+  if (path === 'B') return 5;
+  if (path === 'C') return 6;
+  return 5;
+}
+
+function nextOf(cur) {
+  switch (cur) {
+    case 'q1': return 'q2';
+    case 'q2': return 'q3';
+    case 'q3': return path === 'A' ? 'q4a' : path === 'B' ? 'q4b' : 'q5a';
+    case 'q4a':
+      if (path === 'A') return 'q5a';
+      if (path === 'C') return 'q4b';
+      return 'result';
+    case 'q5a':
+      if (path === 'A') return 'q4b';
+      if (path === 'C') return 'q4a';
+      return 'result';
+    case 'q4b': return (path === 'B' || path === 'A') ? 'q5b' : 'result';
+    case 'q5b': return 'result';
+    default:    return 'result';
+  }
+}
+
+function showScreen(key) {
+  SCREENS.forEach(k => {
+    const el = document.getElementById('scr-' + k);
+    if (el) el.classList.remove('active');
+  });
+  document.getElementById('scr-' + key)?.classList.add('active');
+
+  const step  = key === 'result' ? totalSteps() : history.length;
+  const total = totalSteps();
+  document.getElementById('progress-fill').style.width = Math.min((step / total) * 100, 100) + '%';
+
+  const badge = document.getElementById('step-badge');
+  if (key === 'result') {
+    badge.style.visibility = 'hidden';
+  } else {
+    badge.textContent = `Step ${Math.min(step, total)} of ${total}`;
+    badge.style.visibility = 'visible';
   }
 
-  // ── Next screen ───────────────────────────────────────────────
-  // Path A (manual): q1→q2→q3→q4a→q5a→q4b→q5b→result  (can yield: time / money / both)
-  // Path B (platform/accountant): q1→q2→q3→q4b→q5b→result  (can yield: money / generic)
-  // Path C (unsure): q1→q2→q3→q5a→q4a→q4b→result  (can yield: time / generic)
-  function nextOf(cur) {
-    switch (cur) {
-      case 'q1': return 'q2';
-      case 'q2': return 'q3';
-      case 'q3':
-        return path === 'A' ? 'q4a' : path === 'B' ? 'q4b' : 'q5a';
-      case 'q4a':
-        if (path === 'A') return 'q5a';
-        if (path === 'C') return 'q4b';
-        return 'result';
-      case 'q5a':
-        if (path === 'A') return 'q4b'; // Path A continues to fee questions → enables "both"
-        if (path === 'C') return 'q4a';
-        return 'result';
-      case 'q4b':
-        if (path === 'B' || path === 'A') return 'q5b'; // Both A and B ask about fees
-        return 'result'; // Path C ends here (no fee data collected)
-      case 'q5b': return 'result';
-      default:    return 'result';
-    }
-  }
+  const isFirst  = history.length <= 1;
+  const isResult = key === 'result';
+  document.getElementById('btn-back').classList.toggle('invisible', isFirst || isResult);
+  document.getElementById('card-footer').style.display = isResult ? 'none' : '';
+  document.getElementById('card-header').style.display = isResult ? 'none' : '';
 
-  // ── Show screen ───────────────────────────────────────────────
-  function showScreen(key) {
-    SCREENS.forEach(k => {
-      const el = document.getElementById('scr-' + k);
-      if (el) el.classList.remove('active');
-    });
-    document.getElementById('scr-' + key)?.classList.add('active');
+  if (!isResult) updateContinue(key);
+}
 
-    // Progress — use position in history vs expected path length
-    const step  = key === 'result' ? totalSteps() : history.length;
-    const total = totalSteps();
-    document.getElementById('progress-fill').style.width = Math.min((step / total) * 100, 100) + '%';
+function updateContinue(key) {
+  document.getElementById('btn-continue').disabled = !isAnswered(key);
+}
 
-    // Step counter
-    document.getElementById('step-counter').textContent = Math.min(step, total) + ' / ' + total;
-
-    // Back
-    const isFirst  = history.length <= 1;
-    const isResult = key === 'result';
-    document.getElementById('btn-back').classList.toggle('invisible', isFirst || isResult);
-
-    // Toggle footer
-    document.getElementById('card-footer').style.display = isResult ? 'none' : '';
-
-    if (!isResult) updateContinue(key);
-  }
-
-  function updateContinue(key) {
-    const btn = document.getElementById('btn-continue');
-    const ok  = isAnswered(key);
-    btn.disabled = !ok;
-  }
-
-  function isAnswered(key) {
-    if (key === 'q5b') {
-      const v = parseFloat(document.getElementById('fee-input').value);
+function isAnswered(key) {
+  if (key === 'q5b') {
+    if (feeMode === 'notsure') return true;
+    if (feeMode === 'pct') {
+      const v = parseFloat(document.getElementById('fee-input-pct')?.value);
       return !isNaN(v) && v > 0;
     }
-    return answers[key] != null;
+    if (feeMode === 'dollar') {
+      const v = parseFloat(document.getElementById('fee-input-dollar')?.value);
+      return !isNaN(v) && v > 0;
+    }
+    return false;
   }
+  return answers[key] != null;
+}
 
-  // ── Option clicks ─────────────────────────────────────────────
-  document.querySelectorAll('.opt').forEach(btn => {
-    btn.addEventListener('click', function () {
-      const q = this.dataset.q;
-      const v = this.dataset.v;
-      document.querySelectorAll(`.opt[data-q="${q}"]`).forEach(b => b.classList.remove('selected'));
-      this.classList.add('selected');
-      answers[q] = v;
-
-      if (q === 'q3') {
-        path = v === 'manual' ? 'A'
-             : (v === 'platform' || v === 'accountant') ? 'B'
-             : 'C';
-      }
-
-      updateContinue(history[history.length - 1]);
-    });
+document.querySelectorAll('.opt').forEach(btn => {
+  btn.addEventListener('click', function () {
+    const q = this.dataset.q;
+    const v = this.dataset.v;
+    if (!q) return;
+    document.querySelectorAll(`.opt[data-q="${q}"]`).forEach(b => b.classList.remove('selected'));
+    this.classList.add('selected');
+    answers[q] = v;
+    if (q === 'q3') {
+      path = v === 'manual' ? 'A' : (v === 'platform' || v === 'accountant') ? 'B' : 'C';
+    }
+    updateContinue(history[history.length - 1]);
   });
+});
 
-  // ── Fee ───────────────────────────────────────────────────────
-  function setFeeMode(mode) {
-    feeMode = mode;
-    document.getElementById('tab-pct').classList.toggle('active', mode === 'pct');
-    document.getElementById('tab-dollar').classList.toggle('active', mode === 'dollar');
-    document.getElementById('fee-input').placeholder = mode === 'pct' ? 'e.g. 2.5' : 'e.g. 500';
-    document.getElementById('fee-hint').textContent  = mode === 'pct'
-      ? 'Enter the percentage of your total monthly payroll volume'
-      : 'Enter your estimated monthly payment fees in USD';
-    document.getElementById('fee-input').value = '';
-    answers.feeValue = null;
-    updateContinue('q5b');
+function selectFeeMode(mode) {
+  feeMode = mode;
+  ['pct', 'dollar', 'notsure'].forEach(m => {
+    document.getElementById('fee-opt-' + m)?.classList.toggle('selected', m === mode);
+  });
+  answers.feeValue = null;
+  answers.feeMode  = mode;
+  updateContinue('q5b');
+}
+
+function onFeeInput() {
+  const inputId = feeMode === 'pct' ? 'fee-input-pct' : 'fee-input-dollar';
+  const v = parseFloat(document.getElementById(inputId)?.value);
+  answers.feeValue = isNaN(v) ? null : v;
+  answers.feeMode  = feeMode;
+  updateContinue('q5b');
+}
+
+function goNext() {
+  const cur = history[history.length - 1];
+  if (!isAnswered(cur)) return;
+  const next = nextOf(cur);
+  if (next === 'result') renderResult();
+  history.push(next);
+  showScreen(next);
+}
+
+function goBack() {
+  if (history.length > 1) {
+    history.pop();
+    showScreen(history[history.length - 1]);
   }
+}
 
-  function onFeeInput() {
-    const v = parseFloat(document.getElementById('fee-input').value);
-    answers.feeValue = isNaN(v) ? null : v;
-    answers.feeMode  = feeMode;
-    updateContinue('q5b');
+// ── Result ────────────────────────────────────────────────────
+const PROVIDERS     = ['wise','paypal','payoneer','mix'];
+const PROVIDER_NAME = { wise:'Wise', paypal:'PayPal', payoneer:'Payoneer', bank:'your bank', mix:'multiple providers', other:'your current provider' };
+const VOL_MAP       = { lt10k:5000,'10-30k':20000,'30-50k':40000,'50-100k':75000,'100k+':150000,notsure:20000 };
+const fmtUSD        = n => 'USD ' + Math.round(n).toLocaleString();
+
+const ICONS = {
+  money:   `<img src="icon-payment-header.svg" alt="" style="width:32px;height:32px;display:block;">`,
+  time:    `<img src="icons/res-time.png" alt="" style="width:32px;height:32px">`,  // time icon
+  both:    `<img src="icons/res-both.png" alt="" style="width:32px;height:32px">`,  // both icon
+  generic: `<img src="icons/res-generic.png" alt="" style="width:32px;height:32px">`  // generic icon
+};
+
+function computeType() {
+  const timeSaving = ['1-3','3-5','5-10','10+'].includes(answers.q5a) && PROVIDERS.includes(answers.q4a);
+  let moneySaving  = false;
+  if (answers.feeValue > 0 && feeMode !== 'notsure') {
+    const vol    = VOL_MAP[answers.q4b] || 20000;
+    const feePct = feeMode === 'pct' ? answers.feeValue : (answers.feeValue / vol) * 100;
+    moneySaving  = feePct > 1;
   }
+  if (timeSaving && moneySaving) return 'both';
+  if (timeSaving)  return 'time';
+  if (moneySaving) return 'money';
+  return 'generic';
+}
 
-  // ── Navigate ──────────────────────────────────────────────────
-  function goNext() {
-    const cur = history[history.length - 1];
-    if (!isAnswered(cur)) return;
-    const next = nextOf(cur);
-    if (next === 'result') renderResult();
-    history.push(next);
-    showScreen(next);
-  }
+function renderResult() {
+  const type     = computeType();
+  const vol      = VOL_MAP[answers.q4b] || 20000;
+  const provider = PROVIDER_NAME[answers.q4a] || 'your current provider';
+  const feePct   = (answers.feeValue > 0 && feeMode !== 'notsure')
+    ? (feeMode === 'pct' ? answers.feeValue : (answers.feeValue / vol) * 100) : null;
+  const annualNow = feePct ? vol * (feePct / 100) * 12 : null;
+  const at1pct   = vol * 0.01 * 12;
+  const savings  = annualNow ? annualNow - at1pct : null;
+  const TIME_LABEL  = { lt1:'under an hour','1-3':'1–3 hours','3-5':'3–5 hours','5-10':'5–10 hours','10+':'10+ hours' };
+  const timeStr  = TIME_LABEL[answers.q5a] || 'several hours';
+  const cycles   = ({ weekly:52, biweekly:26, monthly:12, other:20 })[answers.q2] || 26;
 
-  function goBack() {
-    if (history.length > 1) {
-      history.pop();
-      showScreen(history[history.length - 1]);
-    }
-  }
-
-  // ── Result ─────────────────────────────────────────────────────
-  const PROVIDERS     = ['wise','paypal','payoneer','mix'];
-  const PROVIDER_NAME = { wise:'Wise', paypal:'PayPal', payoneer:'Payoneer', bank:'your bank', mix:'multiple providers', other:'your current provider' };
-  const VOL_MAP       = { lt10k:5000,'10-30k':20000,'30-50k':40000,'50-100k':75000,'100k+':150000,notsure:20000 };
-  const fmt           = n => '$' + Math.round(n).toLocaleString();
-
-  const RESULT_THEMES = {
-    time: {
-      bg: '#FFFBEB', border: '#FDE68A', headlineColor: '#78350F',
-      iconColor: '#D97706',
-      iconSVG: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="12" stroke="#D97706" stroke-width="2"/><path d="M16 10v6l4 2" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`
-    },
-    money: {
-      bg: '#ECFDF5', border: '#6EE7B7', headlineColor: '#064E3B',
-      iconColor: '#059669',
-      iconSVG: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="12" stroke="#059669" stroke-width="2"/><path d="M16 9v14M12.5 12.5c0-1.933 1.567-2.5 3.5-2.5s3.5.933 3.5 2.5S17.933 15 16 15s-3.5.567-3.5 2.5S14.067 21 16 21s3.5-.567 3.5-2.5" stroke="#059669" stroke-width="1.8" stroke-linecap="round"/></svg>`
-    },
-    both: {
-      bg: '#EEF7FF', border: '#BAE0FF', headlineColor: '#0C4A6E',
-      iconColor: '#2AA7FF',
-      iconSVG: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="12" stroke="#2AA7FF" stroke-width="2"/><path d="M11 16l3.5 3.5L21 12" stroke="#2AA7FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`
-    },
-    generic: {
-      bg: '#FAF5FF', border: '#DDD6FE', headlineColor: '#4C1D95',
-      iconColor: '#7C3AED',
-      iconSVG: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="12" stroke="#7C3AED" stroke-width="2"/><path d="M16 13c0-1.657 1.343-3 3-3s3 1.343 3 3c0 2-3 2-3 5" stroke="#7C3AED" stroke-width="1.8" stroke-linecap="round"/><circle cx="19" cy="22" r="1" fill="#7C3AED"/></svg>`
-    }
+  const headlines = {
+    money: savings ? `Your payment fees are higher than they need to be. You could save roughly ${fmtUSD(savings)} a year.` : `Your payment fees are higher than they need to be.`,
+    time:  `You're spending time on payroll you don't need to. Teams your size typically cut that time by 50%.`,
+    both:  savings ? `Hubstaff Payments could save you both time and money. That's roughly ${fmtUSD(savings)} in fees alone.` : `Hubstaff Payments could save you both time and money.`,
+    generic: `Hubstaff Payments could simplify your payroll, reduce your fees, or both.`
   };
 
-  function computeType() {
-    const timeSaving  = ['1-3','3-5','5-10','10+'].includes(answers.q5a) && PROVIDERS.includes(answers.q4a);
-    let   moneySaving = false;
-    if (answers.feeValue > 0) {
-      const vol    = VOL_MAP[answers.q4b] || 20000;
-      const feePct = feeMode === 'pct' ? answers.feeValue : (answers.feeValue / vol) * 100;
-      moneySaving  = feePct > 1;
-    }
-    if (timeSaving && moneySaving) return 'both';
-    if (timeSaving)                return 'time';
-    if (moneySaving)               return 'money';
-    return 'generic';
-  }
+  const highlights = {
+    money: annualNow ? `You're currently paying around ${feePct.toFixed(1)}% in fees — that's roughly ${fmtUSD(annualNow)} a year just to move money.` : `You're currently spending a meaningful amount on payment fees every month.`,
+    time:  `You're running payroll manually through ${provider}, spending ${timeStr} each cycle. With ${cycles} pay runs a year, that's a significant overhead — most of it avoidable.`,
+    both:  feePct ? `You're spending ${timeStr} per cycle on manual payroll through ${provider}, and paying ${feePct.toFixed(1)}% in fees — roughly ${fmtUSD(annualNow)} a year just to move money.` : `You're spending ${timeStr} per cycle on manual payroll through ${provider}, on top of payment fees every pay run.`,
+    generic: null
+  };
 
-  function renderResult() {
-    const type     = computeType();
-    const vol      = VOL_MAP[answers.q4b] || 20000;
-    const theme    = RESULT_THEMES[type];
-    const provider = PROVIDER_NAME[answers.q4a] || 'your current provider';
+  const savingsLine = savings ? `Your payment fees may be higher than they need to be. You would save roughly ${fmtUSD(savings)} annually.` : `Your payment fees may be higher than they need to be. Hubstaff Payments runs at ~1% via Wise.`;
+  const genericHTML = `<p>Save money — ${savingsLine}</p><p>Save time — You may be spending time on payroll you don't need to. Teams your size typically cut that time by more than half.</p>`;
 
-    // Shared fee calculations
-    const feePct    = answers.feeValue > 0
-      ? (feeMode === 'pct' ? answers.feeValue : (answers.feeValue / vol) * 100)
-      : null;
-    const annualNow = feePct ? vol * (feePct / 100) * 12 : null;
-    const at1pct    = vol * 0.01 * 12;
-    const savings   = annualNow ? annualNow - at1pct : null;
+  const details = {
+    money: savings ? `Hubstaff Payments processes payroll at ~1% via Wise (about ${fmtUSD(at1pct)}/yr), so you'd keep roughly ${fmtUSD(savings)} that's currently going to fees. A specialist can confirm the exact numbers for your corridors and currencies.` : `Hubstaff Payments processes payroll at ~1% via Wise, which is likely lower than what you're paying today. A specialist can run the exact comparison for your setup.`,
+    time:  `We connect your tracked time directly to a one-click payroll run. No spreadsheets, no individual transfers, and ${provider} is already supported. A specialist can walk you through exactly what it looks like for your team.`,
+    both:  savings ? `Hubstaff Payments fixes both: your tracked time flows into a one-click payroll run, and fees drop to ~1% via Wise — saving roughly ${fmtUSD(savings)}/yr. Book a call and a specialist will show you the full picture.` : `Hubstaff Payments fixes both: your tracked time flows into a one-click payroll run, and fees drop to ~1% via Wise. Book a call and a specialist will show you the full picture.`,
+    generic: `Every team's setup is different. A specialist can look at your specific situation and tell you exactly where the savings are.`
+  };
 
-    // Time labels
-    const TIME_LABEL = { lt1:'under an hour', '1-3':'1–3 hours', '3-5':'3–5 hours', '5-10':'5–10 hours', '10+':'10+ hours' };
-    const timeStr = TIME_LABEL[answers.q5a] || 'several hours';
+  document.getElementById('res-icon').innerHTML = ICONS[type];
+  document.getElementById('res-headline').textContent = headlines[type];
+  const highlightEl = document.getElementById('res-highlight');
+  if (type === 'generic') { highlightEl.innerHTML = genericHTML; }
+  else { highlightEl.textContent = highlights[type]; }
+  document.getElementById('res-detail').textContent = details[type];
+}
 
-    // Frequency multiplier for annual cycle count
-    const FREQ_CYCLES = { weekly:52, biweekly:26, monthly:12, other:20 };
-    const cycles = FREQ_CYCLES[answers.q2] || 26;
-
-    // ── Headlines: problem + quantified outcome ────────────────
-    const headlines = {
-      time:    `You're spending time on payroll you don't need to. Teams your size typically cut that time by more than half.`,
-      money:   savings
-        ? `Your payment fees are higher than they need to be. You could save roughly ${fmt(savings)} a year.`
-        : `Your payment fees are higher than they need to be.`,
-      both:    savings
-        ? `Hubstaff Payments could save you both time and money. That's roughly ${fmt(savings)} in fees alone.`
-        : `Hubstaff Payments could save you both time and money.`,
-      generic: `Hubstaff Payments could simplify your payroll, reduce your fees, or both.`
-    };
-
-    // ── Highlight: key stat (or two-item list for generic) ────
-    const timeHighlight  = `You're running payroll manually through ${provider}, spending ${timeStr} each cycle. With ${cycles} pay runs a year, that's a significant overhead — most of it avoidable.`;
-    const moneyHighlight = annualNow
-      ? `You're currently paying around ${feePct.toFixed(1)}% in fees — that's roughly ${fmt(annualNow)} a year just to move money.`
-      : `You're currently spending a meaningful amount on payment fees every month, on top of the time it takes to run payroll.`;
-    const bothHighlight  = feePct
-      ? `You're spending ${timeStr} per cycle on manual payroll through ${provider}, and paying ${feePct.toFixed(1)}% in fees — roughly ${fmt(annualNow)} a year just to move money.`
-      : `You're spending ${timeStr} per cycle on manual payroll through ${provider}, on top of payment fees every pay run.`;
-
-    // Generic: build a two-item value list
-    const savingsLine = savings
-      ? `Your payment fees are higher than they need to be. You would save roughly ${fmt(savings)} annually.`
-      : `Your payment fees may be higher than they need to be. Hubstaff Payments runs at ~1% via Wise.`;
-    const genericHighlightHTML = `
-      <div class="result-value-list">
-        <div class="result-value-item">
-          <span class="result-value-label">Save money</span>
-          <span class="result-value-text">${savingsLine}</span>
-        </div>
-        <div class="result-value-item">
-          <span class="result-value-label">Save time</span>
-          <span class="result-value-text">You may be spending time on payroll you don't need to. Teams your size typically cut that time by more than half.</span>
-        </div>
-      </div>`;
-
-    const highlights = {
-      time:    timeHighlight,
-      money:   moneyHighlight,
-      both:    bothHighlight,
-      generic: null // handled via innerHTML below
-    };
-
-    // ── Detail paragraph: the Hubstaff solution ───────────────
-    const details = {
-      time:    `Hubstaff Payments connects your tracked time directly to a one-click payroll run. No spreadsheets, no individual transfers — ${provider} is already supported. Andrew can walk you through exactly what it looks like for your team.`,
-      money:   savings
-        ? `Hubstaff Payments processes payroll at ~1% via Wise (about ${fmt(at1pct)}/yr), so you'd keep roughly ${fmt(savings)} that's currently going to fees. Andrew can confirm the exact numbers for your corridors and currencies.`
-        : `Hubstaff Payments processes payroll at ~1% via Wise, which is likely lower than what you're paying today. Andrew can run the exact comparison for your setup.`,
-      both:    savings
-        ? `Hubstaff Payments fixes both: your tracked time flows into a one-click payroll run, and fees drop to ~1% via Wise — saving roughly ${fmt(savings)}/yr. Andrew can show you the full picture in about 20 minutes.`
-        : `Hubstaff Payments fixes both: your tracked time flows into a one-click payroll run, and fees drop to ~1% via Wise. Andrew can show you the full picture in about 20 minutes.`,
-      generic: `Andrew works with teams like yours every week and can tell you in about 20 minutes exactly which of these apply to your setup.`
-    };
-
-    // Apply header theme
-    const header = document.getElementById('res-header');
-    header.style.background  = theme.bg;
-    header.style.borderColor = theme.border;
-    document.getElementById('res-icon').innerHTML       = theme.iconSVG;
-    document.getElementById('res-headline').style.color = theme.headlineColor;
-    document.getElementById('res-headline').textContent = headlines[type];
-
-    // Highlight — generic uses innerHTML for two-item list
-    const highlightEl = document.getElementById('res-body-highlight');
-    if (type === 'generic') {
-      highlightEl.innerHTML = genericHighlightHTML;
-    } else {
-      highlightEl.textContent = highlights[type];
-    }
-
-    document.getElementById('res-body-detail').textContent = details[type];
-  }
-
-  // ── Init ──────────────────────────────────────────────────────
-  showScreen('q1');
+// ── Init ──────────────────────────────────────────────────────
+// Don't auto-show the dialog on load; it opens via openModal()
 </script>
+  <!-- Hubstaff shell library -->
+  <script src="hubstaff-shell.js"></script>
+  <script>
+    HubstaffShell.init({ activeItem: 'financials', logoHref: '#' });
+    // ── Chart.js grouped bar chart ───────────────────────────────
+    (function () {
+      var ctx = document.getElementById('tar-chart-canvas');
+      if (!ctx || typeof Chart === 'undefined') return;
+
+      function fmtTime(val) {
+        var h = Math.floor(val);
+        var m = Math.round((val - h) * 60);
+        return h + ':' + (m < 10 ? '0' + m : m);
+      }
+
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Sun, Mar 1', 'Mon, Mar 2', 'Tue, Mar 3', 'Wed, Mar 4', 'Mon, Mar 9',
+                   'Tue, Mar 10', 'Wed, Mar 11', 'Thu, Mar 12', 'Mon, Mar 16', 'Tue, Mar 17',
+                   'Mon, Mar 23', 'Wed, Mar 25', 'Thu, Mar 26', 'Fri, Mar 27', 'Tue, Mar 31'],
+          datasets: [
+            {
+              label: 'Tracked',
+              data: [0, 0, 0, 0, 0.009, 0.202, 0.172, 0.068, 2.97, 1.22, 0, 1.583, 0.357, 0.008, 0.031],
+              backgroundColor: '#2AA7FF',
+              borderWidth: 0,
+              borderRadius: 4,
+              barThickness: 14
+            },
+            {
+              label: 'Manual',
+              data: [1, 1, 2, 5, 1.167, 1, 0, 0, 0, 0, 1, 4, 4, 0, 1],
+              backgroundColor: '#A7D9FC',
+              borderWidth: 0,
+              borderRadius: 4,
+              barThickness: 14
+            },
+            {
+              label: 'Holiday',
+              data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0],
+              backgroundColor: '#B977FF',
+              borderWidth: 0,
+              borderRadius: 4,
+              barThickness: 14
+            },
+            {
+              label: 'PTO',
+              data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              backgroundColor: '#AFECEF',
+              borderWidth: 0,
+              borderRadius: 4,
+              barThickness: 14
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              align: 'end',
+              labels: {
+                pointStyle: 'circle',
+                usePointStyle: true,
+                boxWidth: 8,
+                boxHeight: 8,
+                font: { size: 12 },
+                color: '#374151'
+              }
+            },
+            tooltip: {
+              backgroundColor: 'rgba(0,0,0,0.85)',
+              callbacks: {
+                label: function(context) {
+                  return context.dataset.label + ': ' + fmtTime(context.raw);
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              border: { color: '#D1D5DB' },
+              ticks: { font: { size: 11 }, color: '#6B7280', maxRotation: 0 }
+            },
+            y: {
+              grid: { display: true, color: '#F3F4F6' },
+              border: { display: false },
+              ticks: {
+                font: { size: 11 },
+                color: '#6B7280',
+                callback: fmtTime
+              }
+            }
+          },
+          layout: { padding: { top: 0 } }
+        }
+      });
+    })();
+
+    // ── View switcher — "Get started" lands on View 1 ────────────
+    // ── Page navigation ──────────────────────────────────────────
+    function showPage(page) {
+      var tar     = document.getElementById('tar-view');
+      var landing = document.getElementById('landing-view');
+      var v2      = document.getElementById('view2-content');
+      if (tar)     tar.style.display     = (page === 'tar')     ? '' : 'none';
+      if (landing) landing.style.display = (page === 'landing') ? '' : 'none';
+      if (v2)      v2.style.display = 'none';
+    }
+
+    // Export → background job → progress bar → then open V2 dialog
+    window.startExport = function () {
+      var toast = document.getElementById('hs-export-toast');
+      var icon  = document.getElementById('hs-export-icon');
+      var text  = document.getElementById('hs-export-text');
+      var close = document.getElementById('hs-export-close');
+
+      // Show toast — "preparing" state
+      icon.textContent = 'cached';
+      icon.style.animation = 'hs-spin 0.9s linear infinite';
+      icon.style.color = '#9CA3AF';
+      text.textContent = 'Your download is being prepared.';
+      close.style.display = 'none';
+      toast.style.display = 'flex';
+
+      // After ~3s — "done" state
+      setTimeout(function () {
+        icon.style.animation = 'none';
+        icon.textContent = 'check_circle';
+        icon.style.color = '#34D399';
+        text.textContent = 'Your export was successfully downloaded.';
+        close.style.display = 'flex';
+
+        // After 1.5s more — hide toast and open dialog
+        setTimeout(function () {
+          toast.style.display = 'none';
+          triggerV2();
+        }, 1500);
+      }, 3000);
+    };
+
+    window.hideExportToast = function () {
+      document.getElementById('hs-export-toast').style.display = 'none';
+    };
+
+    // Trigger V2 dialog over TAR
+    window.triggerV2 = function () {
+      var el = document.getElementById('view2-content');
+      // Force animation replay by briefly removing and re-adding
+      el.style.display = 'none';
+      el.style.animation = 'none';
+      var dialog = el.querySelector('.v2-dialog');
+      if (dialog) dialog.style.animation = 'none';
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          el.style.animation = '';
+          if (dialog) dialog.style.animation = '';
+          el.style.display = 'flex';
+        });
+      });
+    };
+
+    // V2 "Get started" → go to landing page
+    window.goToLanding = function () { document.getElementById('view2-content').style.display='none'; showPage('landing'); };
+
+    // Logo click resets to TAR
+    window.resetToTAR = function () {
+      showPage('tar');
+    };
+
+    // View 1/2 switcher in topbar
+    window.switchView = function (n) {
+      document.querySelectorAll('.vs-btn').forEach(function (btn) {
+        btn.classList.toggle('vs-active', parseInt(btn.dataset.view) === n);
+      });
+      if (n === 1) {
+        showPage('tar');
+      } else {
+        // Show V2 dialog over current view
+        document.getElementById('view2-content').style.display='flex';
+      }
+    };
+  </script>
+
+  <!-- Toast notification -->
+  <div id="tar-toast" hidden aria-live="polite" role="alert">
+    <span class="material-symbols-rounded tar-toast-icon" style="font-variation-settings:'FILL' 1">cached</span>
+    <p class="tar-toast-text">Your export was successfully downloaded.</p>
+    <button class="tar-toast-close" onclick="tarHideToast()" aria-label="Dismiss">
+      <span class="material-symbols-rounded">close</span>
+    </button>
+  </div>
+
+  <style>
+    /* ── Export dropdown ── */
+    .tar-export-wrap {
+      position: relative;
+    }
+    .tar-export-dropdown {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      min-width: 180px;
+      background: #fff;
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.12);
+      padding: 6px 0;
+      z-index: 200;
+    }
+    .tar-export-dropdown[hidden] { display: none; }
+    .tar-export-item {
+      display: block;
+      width: 100%;
+      padding: 10px 16px;
+      text-align: left;
+      background: transparent;
+      border: none;
+      font: 400 14px/1 'Roboto', sans-serif;
+      color: #111827;
+      cursor: pointer;
+      transition: background 100ms;
+    }
+    .tar-export-item:hover { background: #F3F4F6; }
+
+    /* ── Toast ── */
+    @keyframes tar-spin {
+      to { transform: rotate(360deg); }
+    }
+    #tar-toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: #1F2937;
+      border: 1px solid #1F2937;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.25);
+      color: #fff;
+      font: 400 14px/1.4 'Roboto', sans-serif;
+      opacity: 0;
+      transition: opacity 250ms ease, transform 250ms ease;
+      z-index: 9999;
+      white-space: nowrap;
+    }
+    #tar-toast[hidden] { display: none !important; }
+    #tar-toast.tar-toast--visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .tar-toast-icon {
+      font-size: 18px !important;
+      color: #9CA3AF;
+      animation: tar-spin 1s linear infinite;
+      flex-shrink: 0;
+    }
+    .tar-toast-text {
+      flex: 1;
+      font-size: 14px;
+      color: #fff;
+    }
+    .tar-toast-close {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      padding: 2px;
+      border-radius: 50%;
+      color: #6B7280;
+      transition: background 100ms;
+    }
+    .tar-toast-close:hover { background: rgba(255,255,255,0.1); }
+    .tar-toast-close .material-symbols-rounded { font-size: 16px !important; }
+  </style>
+
+  <script>
+    // ── Export dropdown ──
+    document.getElementById('tar-download-btn').addEventListener('click', function(e) {
+      e.stopPropagation();
+      var dd = document.getElementById('tar-export-dropdown');
+      dd.hidden = !dd.hidden;
+    });
+    document.addEventListener('click', function(e) {
+      var wrap = document.getElementById('tar-export-wrap');
+      if (wrap && !wrap.contains(e.target)) {
+        document.getElementById('tar-export-dropdown').hidden = true;
+      }
+    });
+
+    function tarExport(type) {
+      document.getElementById('tar-export-dropdown').hidden = true;
+      if (type === 'pdf') {
+        // Phase 1 — preparing
+        tarShowToast('Your export is being prepared, download will start shortly.');
+        // Phase 2 — done
+        setTimeout(function() {
+          document.querySelector('.tar-toast-text').textContent = 'Your export was successfully downloaded.';
+        }, 1800);
+        // Hide toast + open dialog
+        setTimeout(function() {
+          tarHideToast();
+          setTimeout(function() { switchView(2); }, 300);
+        }, 3200);
+      }
+    }
+
+    function tarShowToast(msg) {
+      var toast = document.getElementById('tar-toast');
+      if (msg) document.querySelector('.tar-toast-text').textContent = msg;
+      toast.hidden = false;
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          toast.classList.add('tar-toast--visible');
+        });
+      });
+    }
+
+    function tarHideToast() {
+      var toast = document.getElementById('tar-toast');
+      toast.classList.remove('tar-toast--visible');
+      setTimeout(function() { toast.hidden = true; }, 300);
+    }
+  </script>
+<!-- ── Export toast (Hubstaff-style, bottom-center) ── -->
+<div id="hs-export-toast" style="
+  display:none;
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  align-items:center;
+  gap:8px;
+  background:#1F2937;
+  border:1px solid #374151;
+  color:#fff;
+  border-radius:8px;
+  padding:12px 16px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.35);
+  font-family:'Roboto',sans-serif;
+  font-size:14px;
+  font-weight:400;
+  z-index:99999;
+  min-width:320px;
+  white-space:nowrap;
+">
+  <span id="hs-export-icon" class="material-symbols-rounded" style="font-size:18px;font-variation-settings:'FILL' 1;flex-shrink:0">cached</span>
+  <span id="hs-export-text">Your download is being prepared.</span>
+  <button id="hs-export-close" onclick="hideExportToast()" style="
+    display:none;
+    margin-left:auto;
+    width:20px;height:20px;
+    border:none;background:none;
+    cursor:pointer;color:#9CA3AF;
+    border-radius:50%;
+    align-items:center;justify-content:center;
+    font-family:'Material Symbols Rounded',sans-serif;
+    font-size:16px;
+  ">close</button>
+</div>
+<style>
+  @keyframes hs-spin { to { transform: rotate(360deg); } }
+</style>
 </body>
 </html>
