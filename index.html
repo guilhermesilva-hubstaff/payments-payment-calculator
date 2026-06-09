@@ -1953,7 +1953,7 @@
     <section class="calc-section">
       <div class="calc-card">
         <div class="calc-left">
-          <h2 class="calc-title">Find out how your team could <span class="calc-title-highlight">save time and money</span> on payroll</h2>
+          <h2 class="calc-title">Customers save over <span class="calc-title-highlight">$10K in fees</span> and <span class="calc-title-highlight">10+ hours</span> every time they run payroll</h2>
           <div class="calc-btns">
             <button class="btn-calc-primary" onclick="openModal()">Get my estimate</button>
             <a href="https://meetings.hubspot.com/andrew-martin10/payments-meetingdemo" target="_blank" class="btn-calc-outline">Talk to a specialist</a>
@@ -2058,7 +2058,20 @@
     <!-- Body -->
     <div class="v2-body">
 
-      <!-- Top card: feature list + Get started -->
+      <!-- Top banner: estimate -->
+      <div class="v2-banner">
+        <div class="v2-banner-left">
+          <div class="v2-banner-text">
+            <p class="v2-banner-title">Customers save over <span style="color:#7F3CF2;font-weight:700">$10K in fees</span> and <span style="color:#7F3CF2;font-weight:700">10+ hours</span> every time they run payroll</p>
+          </div>
+          <button class="v2-btn-primary" onclick="goToLanding(); setTimeout(openModal, 100)">Calculate your savings</button>
+        </div>
+        <div class="v2-banner-right">
+          <img src="payroll-table.png?v=2" alt="" class="v2-banner-img">
+        </div>
+      </div>
+
+      <!-- Bottom card: feature list + Get started -->
       <div class="v2-card">
         <div class="v2-card-text">
           <p class="v2-card-title">You're already tracking time in Hubstaff.</p>
@@ -2084,20 +2097,7 @@
             <span class="v2-feature-text">Pay contractors worldwide with trusted partners</span>
           </div>
         </div>
-        <button class="v2-btn-primary" onclick="goToLanding()">Get started</button>
-      </div>
-
-      <!-- Bottom banner: estimate -->
-      <div class="v2-banner">
-        <div class="v2-banner-left">
-          <div class="v2-banner-text">
-            <p class="v2-banner-title">Find out how your team could<br><span style="color:#7F3CF2;font-weight:700">save time and money</span> on payroll</p>
-          </div>
-          <button class="v2-btn-outline" onclick="goToLanding(); setTimeout(openModal, 100)">Get my estimate</button>
-        </div>
-        <div class="v2-banner-right">
-          <img src="payroll-table.png?v=2" alt="" class="v2-banner-img">
-        </div>
+        <button class="v2-btn-outline" onclick="goToLanding()">Get started</button>
       </div>
 
     </div><!-- /v2-body -->
