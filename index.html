@@ -2310,7 +2310,7 @@
                 </div>
                 <div class="res-card-info">
                   <span class="res-card-name">Andrew Martin</span>
-                  <span class="res-card-title">Payments Specialist</span>
+                  <span class="res-card-title">Learn more about your savings with our specialist</span>
                 </div>
                 <a href="https://meetings.hubspot.com/andrew-martin" class="res-btn-primary" target="_blank">Book a call</a>
               </div>
@@ -2597,10 +2597,10 @@ function renderResult() {
   const genericHTML = `<p>Save money — ${savingsLine}</p><p>Save time — You may be spending time on payroll you don't need to. Teams your size typically cut that time by more than half.</p>`;
 
   const details = {
-    money: savings ? `Hubstaff Payments processes payroll at ~1% via Wise (about ${fmtUSD(at1pct)}/yr), so you'd keep roughly ${fmtUSD(savings)} that's currently going to fees. A specialist can confirm the exact numbers for your corridors and currencies.` : `Hubstaff Payments processes payroll at ~1% via Wise, which is likely lower than what you're paying today. A specialist can run the exact comparison for your setup.`,
-    time:  `We connect your tracked time directly to a one-click payroll run. No spreadsheets, no individual transfers, and ${provider} is already supported. A specialist can walk you through exactly what it looks like for your team.`,
-    both:  savings ? `Hubstaff Payments fixes both: your tracked time flows into a one-click payroll run, and fees drop to ~1% via Wise — saving roughly ${fmtUSD(savings)}/yr. Book a call and a specialist will show you the full picture.` : `Hubstaff Payments fixes both: your tracked time flows into a one-click payroll run, and fees drop to ~1% via Wise. Book a call and a specialist will show you the full picture.`,
-    generic: `Every team's setup is different. A specialist can look at your specific situation and tell you exactly where the savings are.`
+    money: savings ? `Hubstaff Payments processes payroll at ~1% via Wise (about ${fmtUSD(at1pct)}/yr), so you'd keep roughly ${fmtUSD(savings)} that's currently going to fees.` : `Hubstaff Payments processes payroll at ~1% via Wise, which is likely lower than what you're paying today.`,
+    time:  `We connect your tracked time directly to a one-click payroll run. No spreadsheets, no individual transfers, and ${provider} is already supported.`,
+    both:  savings ? `Hubstaff Payments fixes both: your tracked time flows into a one-click payroll run, and fees drop to ~1% via Wise — saving roughly ${fmtUSD(savings)}/yr.` : `Hubstaff Payments fixes both: your tracked time flows into a one-click payroll run, and fees drop to ~1% via Wise.`,
+    generic: `Every team's setup is different. Book a call and our specialist will show you exactly where the savings are.`
   };
 
   document.getElementById('res-icon').innerHTML = ICONS[type];
