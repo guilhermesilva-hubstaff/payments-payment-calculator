@@ -958,6 +958,34 @@
 
     .opt.selected .radio { border: 4px solid var(--blue); }
 
+    /* Checkbox variant for multi-select questions */
+    .opt .checkbox {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1.5px solid var(--gray-300);
+      flex-shrink: 0;
+      background: var(--white);
+      transition: border 0.12s, background 0.12s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .opt.selected .checkbox {
+      background: var(--blue);
+      border-color: var(--blue);
+    }
+    .opt.selected .checkbox::after {
+      content: '';
+      display: block;
+      width: 4px;
+      height: 7px;
+      border: 2px solid #fff;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg) translateY(-1px);
+    }
+
     .opt-label { font-size: 14px; font-weight: 400; color: var(--gray-900); line-height: 20px; }
     .opt-note  { color: #9CA3AF; }
 
@@ -2106,7 +2134,7 @@
     <div class="v2-footer">
       <button class="v2-btn-ghost" onclick="document.getElementById('view2-content').style.display='none'">Don't show me this again</button>
       <div class="v2-footer-right">
-        <button class="v2-btn-secondary" onclick="document.getElementById('view2-content').style.display='none'">Maybe later</button>
+        <button class="v2-btn-secondary" onclick="document.getElementById('view2-content').style.display='none'">Remind me later</button>
         <a href="https://meetings.hubspot.com/andrew-martin10/payments-meetingdemo" target="_blank" class="v2-btn-blue-outline">Talk to a specialist</a>
       </div>
     </div>
@@ -2158,6 +2186,7 @@
           <div class="options">
             <button class="opt" data-q="q2" data-v="weekly"><div class="radio"></div><span class="opt-label">Weekly</span></button>
             <button class="opt" data-q="q2" data-v="biweekly"><div class="radio"></div><span class="opt-label">Every two weeks</span></button>
+            <button class="opt" data-q="q2" data-v="twicemonthly"><div class="radio"></div><span class="opt-label">Twice per month</span></button>
             <button class="opt" data-q="q2" data-v="monthly"><div class="radio"></div><span class="opt-label">Once a month</span></button>
             <button class="opt" data-q="q2" data-v="other"><div class="radio"></div><span class="opt-label">Other</span></button>
             <button class="opt" data-q="q2" data-v="notsure"><div class="radio"></div><span class="opt-label">Not sure</span></button>
@@ -2181,17 +2210,16 @@
         <!-- Q4A -->
         <div class="screen" id="scr-q4a">
           <div class="q-head">
-            <h2 class="q-title">Which provider do you use to send payments?</h2>
-            <p class="q-sub">Select the one you use most often.</p>
+            <h2 class="q-title">Which providers do you use to send payments?</h2>
+            <p class="q-sub">Select all that apply.</p>
           </div>
           <div class="options">
-            <button class="opt" data-q="q4a" data-v="wise"><div class="radio"></div><span class="opt-label">Wise</span></button>
-            <button class="opt" data-q="q4a" data-v="paypal"><div class="radio"></div><span class="opt-label">PayPal</span></button>
-            <button class="opt" data-q="q4a" data-v="payoneer"><div class="radio"></div><span class="opt-label">Payoneer</span></button>
-            <button class="opt" data-q="q4a" data-v="bank"><div class="radio"></div><span class="opt-label">Local bank transfer</span></button>
-            <button class="opt" data-q="q4a" data-v="mix"><div class="radio"></div><span class="opt-label">A mix of providers</span></button>
-            <button class="opt" data-q="q4a" data-v="other"><div class="radio"></div><span class="opt-label">Something else</span></button>
-            <button class="opt" data-q="q4a" data-v="notsure"><div class="radio"></div><span class="opt-label">Not sure</span></button>
+            <button class="opt opt-check" data-q="q4a" data-v="wise"><div class="checkbox"></div><span class="opt-label">Wise</span></button>
+            <button class="opt opt-check" data-q="q4a" data-v="paypal"><div class="checkbox"></div><span class="opt-label">PayPal</span></button>
+            <button class="opt opt-check" data-q="q4a" data-v="payoneer"><div class="checkbox"></div><span class="opt-label">Payoneer</span></button>
+            <button class="opt opt-check" data-q="q4a" data-v="bank"><div class="checkbox"></div><span class="opt-label">Local bank transfer</span></button>
+            <button class="opt opt-check" data-q="q4a" data-v="other"><div class="checkbox"></div><span class="opt-label">Something else</span></button>
+            <button class="opt opt-check" data-q="q4a" data-v="notsure"><div class="checkbox"></div><span class="opt-label">Not sure</span></button>
           </div>
         </div>
 
@@ -2425,6 +2453,7 @@ function isAnswered(key) {
     }
     return false;
   }
+  if (key === 'q4a') return Array.isArray(answers.q4a) && answers.q4a.length > 0;
   return answers[key] != null;
 }
 
@@ -2433,6 +2462,26 @@ document.querySelectorAll('.opt').forEach(btn => {
     const q = this.dataset.q;
     const v = this.dataset.v;
     if (!q) return;
+
+    // q4a is multi-select (checkboxes)
+    if (q === 'q4a') {
+      // "Not sure" is exclusive
+      if (v === 'notsure') {
+        document.querySelectorAll(`.opt[data-q="q4a"]`).forEach(b => b.classList.remove('selected'));
+        this.classList.add('selected');
+        answers.q4a = ['notsure'];
+      } else {
+        // Deselect "Not sure" if something else picked
+        const notsureBtn = document.querySelector(`.opt[data-q="q4a"][data-v="notsure"]`);
+        if (notsureBtn) notsureBtn.classList.remove('selected');
+        this.classList.toggle('selected');
+        const selected = [...document.querySelectorAll(`.opt[data-q="q4a"].selected`)].map(b => b.dataset.v);
+        answers.q4a = selected.length ? selected : null;
+      }
+      updateContinue(history[history.length - 1]);
+      return;
+    }
+
     document.querySelectorAll(`.opt[data-q="${q}"]`).forEach(b => b.classList.remove('selected'));
     this.classList.add('selected');
     answers[q] = v;
@@ -2478,10 +2527,23 @@ function goBack() {
 }
 
 // ── Result ────────────────────────────────────────────────────
-const PROVIDERS     = ['wise','paypal','payoneer','mix'];
-const PROVIDER_NAME = { wise:'Wise', paypal:'PayPal', payoneer:'Payoneer', bank:'your bank', mix:'multiple providers', other:'your current provider' };
+const PROVIDERS     = ['wise','paypal','payoneer','bank'];
+const PROVIDER_NAME = { wise:'Wise', paypal:'PayPal', payoneer:'Payoneer', bank:'local bank transfer', other:'another provider' };
 const VOL_MAP       = { lt10k:5000,'10-30k':20000,'30-50k':40000,'50-100k':75000,'100k+':150000,notsure:20000 };
 const fmtUSD        = n => 'USD ' + Math.round(n).toLocaleString();
+
+function providerLabel(q4aArr) {
+  if (!Array.isArray(q4aArr) || q4aArr.length === 0) return 'your current provider';
+  if (q4aArr.includes('notsure')) return 'your current provider';
+  const names = q4aArr.filter(v => PROVIDER_NAME[v]).map(v => PROVIDER_NAME[v]);
+  if (names.length === 0) return 'your current provider';
+  if (names.length === 1) return names[0];
+  return names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1];
+}
+
+function hasKnownProvider(q4aArr) {
+  return Array.isArray(q4aArr) && q4aArr.some(v => PROVIDERS.includes(v));
+}
 
 const ICONS = {
   money:   `<img src="icon-payment-header.svg" alt="" style="width:32px;height:32px;display:block;">`,
@@ -2491,7 +2553,7 @@ const ICONS = {
 };
 
 function computeType() {
-  const timeSaving = ['1-3','3-5','5-10','10+'].includes(answers.q5a) && PROVIDERS.includes(answers.q4a);
+  const timeSaving = ['1-3','3-5','5-10','10+'].includes(answers.q5a) && hasKnownProvider(answers.q4a);
   let moneySaving  = false;
   if (answers.feeValue > 0 && feeMode !== 'notsure') {
     const vol    = VOL_MAP[answers.q4b] || 20000;
@@ -2507,7 +2569,7 @@ function computeType() {
 function renderResult() {
   const type     = computeType();
   const vol      = VOL_MAP[answers.q4b] || 20000;
-  const provider = PROVIDER_NAME[answers.q4a] || 'your current provider';
+  const provider = providerLabel(answers.q4a);
   const feePct   = (answers.feeValue > 0 && feeMode !== 'notsure')
     ? (feeMode === 'pct' ? answers.feeValue : (answers.feeValue / vol) * 100) : null;
   const annualNow = feePct ? vol * (feePct / 100) * 12 : null;
@@ -2515,7 +2577,7 @@ function renderResult() {
   const savings  = annualNow ? annualNow - at1pct : null;
   const TIME_LABEL  = { lt1:'under an hour','1-3':'1–3 hours','3-5':'3–5 hours','5-10':'5–10 hours','10+':'10+ hours' };
   const timeStr  = TIME_LABEL[answers.q5a] || 'several hours';
-  const cycles   = ({ weekly:52, biweekly:26, monthly:12, other:20 })[answers.q2] || 26;
+  const cycles   = ({ weekly:52, biweekly:26, twicemonthly:24, monthly:12, other:20 })[answers.q2] || 26;
 
   const headlines = {
     money: savings ? `Your payment fees are higher than they need to be. You could save roughly ${fmtUSD(savings)} a year.` : `Your payment fees are higher than they need to be.`,
