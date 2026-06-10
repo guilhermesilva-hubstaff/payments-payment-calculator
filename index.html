@@ -825,8 +825,8 @@
       display: flex;
       flex-direction: column;
       gap: 30px;
-      overflow: hidden;
-      height: 660px;
+      height: fit-content;
+      max-height: 90vh;
       overflow-y: auto;
     }
 
@@ -2324,10 +2324,10 @@
                 </div>
                 <a href="https://app.hubstaff.com/payments/setup" class="res-btn-outline" target="_blank">Start setup</a>
               </div>
-              <div style="display:flex;justify-content:flex-end;padding-top:4px;">
-                <button onclick="emailSavings()" style="display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:#fff;border:1px solid #D1D5DB;border-radius:8px;font-size:14px;font-weight:500;color:#111928;cursor:pointer;transition:border-color 0.15s,background 0.15s;" onmouseover="this.style.borderColor='#9CA3AF';this.style.background='#F9FAFB'" onmouseout="this.style.borderColor='#D1D5DB';this.style.background='#fff'">
+              <div style="display:flex;justify-content:flex-end;padding-top:30px;">
+                <button onclick="emailSavings()" class="res-btn-outline" style="gap:8px;">
                   Email my savings
-                  <span class="material-symbols-rounded" style="font-size:16px;color:#374151;font-variation-settings:'FILL' 0">send</span>
+                  <span class="material-symbols-rounded" style="font-size:16px;font-variation-settings:'FILL' 0">send</span>
                 </button>
               </div>
             </div>
