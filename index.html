@@ -1067,6 +1067,21 @@
 
     .res-text-block { display: flex; flex-direction: column; gap: 16px; }
 
+    .no-extra-cost-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      background: #EDE9FE;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #5B21B6;
+      white-space: nowrap;
+      width: fit-content;
+    }
+    .no-extra-cost-pill .pill-star { font-size: 12px; }
+
     .res-highlight { font-size: 18px; font-weight: 600; color: #111928; line-height: 26px; }
     .res-highlight p + p { margin-top: 16px; }
 
@@ -2091,6 +2106,7 @@
       <div class="v2-banner">
         <div class="v2-banner-left">
           <div class="v2-banner-text">
+            <span class="no-extra-cost-pill" style="margin-bottom:8px;"><span class="pill-star">☆</span> No extra cost</span>
             <p class="v2-banner-title">Customers save over <span style="color:#7F3CF2;font-weight:700">$10K in fees</span> and <span style="color:#7F3CF2;font-weight:700">10+ hours</span> every time they run payroll</p>
           </div>
           <button class="v2-btn-primary" onclick="goToLanding(); setTimeout(openModal, 100)">Calculate your savings</button>
@@ -2166,7 +2182,7 @@
         <div class="screen active" id="scr-q1">
           <div class="q-head">
             <h2 class="q-title">How many team members (aka contractors) do you pay?</h2>
-            <p class="q-sub">Include anyone you pay regularly, regardless of location.</p>
+            <p class="q-sub">Include anyone you pay regularly, regardless of location, except full-time.</p>
           </div>
           <div class="options">
             <button class="opt" data-q="q1" data-v="1-10"><div class="radio"></div><span class="opt-label">1 to 10 people</span></button>
@@ -2205,6 +2221,11 @@
             <button class="opt" data-q="q3" data-v="platform"><div class="radio"></div><span class="opt-label">Through a payroll platform <span class="opt-note">(Deel, Rippling, Remote, ADP)</span></span></button>
             <button class="opt" data-q="q3" data-v="accountant"><div class="radio"></div><span class="opt-label">Through an accountant or bookkeeper</span></button>
             <button class="opt" data-q="q3" data-v="unsure"><div class="radio"></div><span class="opt-label">I'm not sure</span></button>
+            <button class="opt" data-q="q3" data-v="other" id="q3-other-btn"><div class="radio"></div><span class="opt-label">Other</span>
+              <div class="q3-other-wrap" id="q3-other-wrap" style="display:none;width:100%;margin-top:8px;" onclick="event.stopPropagation()">
+                <input type="text" id="q3-other-input" class="fee-input-field" placeholder="Describe your setup (optional)" style="width:100%;box-sizing:border-box;" onclick="event.stopPropagation()">
+              </div>
+            </button>
           </div>
         </div>
 
@@ -2259,22 +2280,22 @@
         <!-- Q5B -->
         <div class="screen" id="scr-q5b">
           <div class="q-head">
-            <h2 class="q-title">How much do you spend on payment fees per month?</h2>
+            <h2 class="q-title" id="q5b-title">How much do you spend on payment fees per month?</h2>
             <p class="q-sub">An estimate is fine — we just need a rough number.</p>
           </div>
           <div class="fee-options">
             <div class="fee-option" id="fee-opt-pct" onclick="selectFeeMode('pct')">
-              <div class="fee-opt-row"><div class="fee-radio" id="fee-radio-pct"></div><span class="opt-label">Percentage (%)</span></div>
+              <div class="fee-opt-row"><div class="fee-radio" id="fee-radio-pct"></div><span class="opt-label">Percentage (%)</span><span class="fee-across-label" id="fee-across-pct" style="display:none;margin-left:auto;font-size:12px;color:#6B7280;font-weight:400;">Across all providers</span></div>
               <div class="fee-input-wrap">
                 <input class="fee-input-field" id="fee-input-pct" type="number" min="0" step="0.1" placeholder="e.g. 2.5" oninput="onFeeInput()" onclick="event.stopPropagation()">
                 <p class="fee-hint">Enter the percentage of your total monthly volume</p>
               </div>
             </div>
             <div class="fee-option" id="fee-opt-dollar" onclick="selectFeeMode('dollar')">
-              <div class="fee-opt-row"><div class="fee-radio" id="fee-radio-dollar"></div><span class="opt-label">Amount (USD - dollar)</span></div>
+              <div class="fee-opt-row"><div class="fee-radio" id="fee-radio-dollar"></div><span class="opt-label">Monthly amount</span><span class="fee-across-label" id="fee-across-dollar" style="display:none;margin-left:auto;font-size:12px;color:#6B7280;font-weight:400;">Across all providers</span></div>
               <div class="fee-input-wrap">
                 <input class="fee-input-field" id="fee-input-dollar" type="number" min="0" step="1" placeholder="e.g. 500" oninput="onFeeInput()" onclick="event.stopPropagation()">
-                <p class="fee-hint">Enter your estimated monthly payment fees in USD</p>
+                <p class="fee-hint" id="fee-hint-dollar">Enter your estimated monthly payment fees</p>
               </div>
             </div>
             <div class="fee-option" id="fee-opt-notsure" onclick="selectFeeMode('notsure')">
@@ -2296,6 +2317,7 @@
           </div>
           <div class="res-body">
             <div class="res-text-block">
+              <span class="no-extra-cost-pill"><span class="pill-star">☆</span> No extra cost</span>
               <div class="res-highlight" id="res-highlight"></div>
               <p class="res-detail" id="res-detail"></p>
             </div>
@@ -2429,6 +2451,8 @@ function showScreen(key) {
   });
   document.getElementById('scr-' + key)?.classList.add('active');
 
+  if (key === 'q5b') updateQ5bForProviders();
+
   const step  = key === 'result' ? totalSteps() : history.length;
   const total = totalSteps();
   document.getElementById('progress-fill').style.width = Math.min((step / total) * 100, 100) + '%';
@@ -2501,10 +2525,28 @@ document.querySelectorAll('.opt').forEach(btn => {
     answers[q] = v;
     if (q === 'q3') {
       path = v === 'manual' ? 'A' : (v === 'platform' || v === 'accountant') ? 'B' : 'C';
+      // Show/hide "Other" text input
+      const wrap = document.getElementById('q3-other-wrap');
+      if (wrap) wrap.style.display = (v === 'other') ? 'block' : 'none';
     }
     updateContinue(history[history.length - 1]);
   });
 });
+
+function updateQ5bForProviders() {
+  const providers = Array.isArray(answers.q4a) ? answers.q4a.filter(v => v !== 'notsure') : [];
+  const multi = providers.length > 1;
+  const titleEl = document.getElementById('q5b-title');
+  if (titleEl) {
+    titleEl.textContent = multi
+      ? 'How much do you spend on payment fees per month across all providers?'
+      : 'How much do you spend on payment fees per month?';
+  }
+  ['pct', 'dollar'].forEach(m => {
+    const el = document.getElementById('fee-across-' + m);
+    if (el) el.style.display = multi ? 'inline' : 'none';
+  });
+}
 
 function selectFeeMode(mode) {
   feeMode = mode;
@@ -2544,7 +2586,9 @@ function goBack() {
 const PROVIDERS     = ['wise','paypal','payoneer','bank'];
 const PROVIDER_NAME = { wise:'Wise', paypal:'PayPal', payoneer:'Payoneer', bank:'local bank transfer', other:'another provider' };
 const VOL_MAP       = { lt10k:5000,'10-30k':20000,'30-50k':40000,'50-100k':75000,'100k+':150000,notsure:20000 };
-const fmtUSD        = n => 'USD ' + Math.round(n).toLocaleString();
+// Currency config — matches org settings; defaults to USD
+const ORG_CURRENCY  = { code: 'USD', symbol: '$' };
+const fmtUSD        = n => ORG_CURRENCY.code + ' ' + Math.round(n).toLocaleString();
 
 function providerLabel(q4aArr) {
   if (!Array.isArray(q4aArr) || q4aArr.length === 0) return 'your current provider';
