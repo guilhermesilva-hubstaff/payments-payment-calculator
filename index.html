@@ -719,20 +719,19 @@
       background: #EAF6FF;
       border-radius: 8px;
       border: 1px solid #7FCAFF;
-      padding: 0 0 0 20px;
+      padding: 0;
       display: flex;
-      gap: 10px;
       overflow: hidden;
+      height: 180px;
     }
 
     .v2-banner-left {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
       flex: 1;
       min-width: 0;
-      padding-top: 20px;
-      padding-bottom: 20px;
+      padding: 20px 0 20px 20px;
     }
 
     .v2-banner-text { display: flex; flex-direction: column; gap: 8px; }
@@ -749,16 +748,17 @@
     .v2-btn-outline:hover { background: rgba(1,104,221,0.06); }
 
     .v2-banner-right {
-      display: flex;
-      align-items: flex-end;
       flex-shrink: 0;
+      align-self: stretch;
+      overflow: hidden;
     }
 
     .v2-banner-img {
-      height: 175px;
+      height: 100%;
       width: auto;
       display: block;
-      margin-bottom: 0;
+      object-fit: cover;
+      object-position: center bottom;
     }
 
     .v2-footer {
